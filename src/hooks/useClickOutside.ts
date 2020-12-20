@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted, Ref } from 'vue'
 // 目标 点解页面非下拉菜单时 收起下拉菜单
 // 实现逻辑是 获取点击内容 判断是否为下拉菜单内容 && isOpen
-// first ts function
+// first ts function fin
 
 const useClickOutside = (elementRef: Ref<null | HTMLElement>) => {
   const isClickOutside = ref(false)
