@@ -10,8 +10,8 @@
         <p class="text-muted">{{event.description}}</p>
       </div>
     </div>
-    <!-- <post-list :posts="posts"></post-list> -->
-    <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm">
+    <post-list :posts="posts"></post-list>
+    <!-- <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm">
       <div class="card-body">
         <h4><router-link :to="`/posts/${post._id}/`">{{post.title}}</router-link></h4>
         <div class="row my-3 align-items-center">
@@ -22,18 +22,18 @@
         </div>
         <span class="text-muted">{{post.createdAt}}</span>
       </div>
-    </article>
+    </article> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import PostList from '../components/EventList.vue'
+import PostList from '../components/PostList.vue'
 import { testPosts, testEvent } from '../testData'
 export default defineComponent({
   components: {
-    // PostList
+    PostList
   },
   setup () {
     const route = useRoute()

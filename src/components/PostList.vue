@@ -20,7 +20,7 @@ import { defineComponent, PropType, computed } from 'vue'
 import { PostProps } from '../testData'
 export default defineComponent({
   props: {
-    post: {
+    posts: {
       required: true,
       type: Array as PropType<PostProps[]>
     }
