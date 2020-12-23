@@ -1,34 +1,39 @@
 <template>
-  <div class="row">
-    <div v-for="post in list" :key="post.id" class="mb-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body text-center">
-          <img  :src="post.avatar" :alt="post.title" class=" border border-light w-25 my-3" >
-          <h5 class="card-title">{{post.title}}</h5>
-          <p class="card-text text-left">{{post.description}}</p>
-          <a href="#" class="btn btn-outline-primary">img</a>
+  <div class="post-list">
+    <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h4><router-link :to="`/posts/${post._id}/`">{{post.title}}</router-link></h4>
+        <div class="row my-3 align-items-center">
+          <div v-if="post.image && typeof post.image !== 'string'" class="col-4">
+            <img :src="post.image.fitUrl" :alt="post.title" class="rounded-lg w-100">
+          </div>
+          <p :class="{'col-8': post.image}" class="text-muted">{{post.excerpt}}</p>
         </div>
+        <span class="text-muted">{{post.createdAt}}</span>
       </div>
-    </div>
+    </article>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-
-export interface PostProps{
-  id: number;
-  title: string;
-  avatar?: string;
-  description: string;
-}
+import { defineComponent, PropType, computed } from 'vue'
+import { PostProps } from '../testData'
 export default defineComponent({
-  name: 'PostList',
   props: {
-    list: {
-      type: Array as PropType<PostProps[]>,
-      required: true
+    post: {
+      required: true,
+      type: Array as PropType<PostProps[]>
     }
   }
 })
 </script>
+
+<style scoped>
+.post-list h4 a {
+  text-decoration: none;
+  color:#1a1a1a;
+}
+.post-list h4 a:hover {
+  color:#0d6efd;
+}
+</style>

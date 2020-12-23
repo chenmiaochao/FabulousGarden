@@ -1,11 +1,12 @@
 <template>
-  <div class="box overflow-scroll flex-nowrap">
-    <div v-for="event in list2" :key="event.id" class="mb-4  box-item rounded-circle">
-      <div class="">
+  <div class="">
+    <div v-for="event in event" :key="event.id" class="col-4 mb-4">
+      <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
-          <img  :src="event.avatar" :alt="event.title" class=" border border-light w-25 my-3" >
+          <img  :src="event.avatar" :alt="event.title" class="rounded-circle border border-light w-25 my-3" >
           <h5 class="card-title">{{event.title}}</h5>
-          <a href="#" class="btn btn-outline-primary">img</a>
+          <p class="card-text text-left">{{event.description}}</p>
+          <router-link :to="`/community/${event.communityId}/${event.id}`" class="btn btn-outline-primary">进入event</router-link>
         </div>
       </div>
     </div>
@@ -13,31 +14,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
+import { EventProps, testData, testEvent } from '../testData'
 
-export interface EventProps{
-  id: number;
-  title: string;
-  avatar?: string;
-}
 export default defineComponent({
   name: 'EventList',
   props: {
-    list2: {
+    event: {
       type: Array as PropType<EventProps[]>,
       required: true
     }
   }
 })
 </script>
-
-<style>
-.box{
-  display: flex;
-}
-.box-item{
-  height: 80px;
-  width: 80px;
-  background-color: aqua;
-}
-</style>
