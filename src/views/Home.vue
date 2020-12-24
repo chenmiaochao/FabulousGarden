@@ -20,26 +20,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import CommunityList from '../components/CommunityList.vue'
-import PostList from '../components/PostList.vue'
-import EventList from '../components/EventList.vue'
 import { testData, testEvent, testPosts } from '../testData'
-import Community from './Community.vue'
-
+import { useStore } from 'vuex'
+import { GolbalDataProps } from '../store'
 export default defineComponent({
   name: 'Home',
   components: {
     CommunityList
-    // PostList,
-    // EventList,
-    // Community
   },
   setup () {
+    const store = useStore<GolbalDataProps>()
+    // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
+    const communityData = computed(() => store.state.communities)
     return {
-      list: testData,
-      list2: testEvent,
-      list3: testPosts
+      list: communityData
     }
   }
 })

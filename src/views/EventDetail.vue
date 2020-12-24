@@ -11,38 +11,31 @@
       </div>
     </div>
     <post-list :posts="posts"></post-list>
-    <!-- <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm">
-      <div class="card-body">
-        <h4><router-link :to="`/posts/${post._id}/`">{{post.title}}</router-link></h4>
-        <div class="row my-3 align-items-center">
-          <div v-if="post.image && typeof post.image !== 'string'" class="col-4">
-            <img :src="post.image.fitUrl" :alt="post.title" class="rounded-lg w-100">
-          </div>
-          <p :class="{'col-8': post.image}" class="text-muted">{{post.excerpt}}</p>
-        </div>
-        <span class="text-muted">{{post.createdAt}}</span>
-      </div>
-    </article> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import { GolbalDataProps } from '../store'
 import PostList from '../components/PostList.vue'
-import { testPosts, testEvent } from '../testData'
+// import { testPosts, testEvent } from '../testData'
 export default defineComponent({
   components: {
     PostList
   },
   setup () {
+    const store = useStore<GolbalDataProps>()
+    const testEvent = computed(() => store.state.events)
+    const testPosts = computed(() => store.state.posts)
     const route = useRoute()
     // string => number
     const currentId = +route.params.eventId
     // 从数组里面找一项 匹配专栏id的testdata
-    const event = testEvent.find(e => e.id === currentId)
+    const event = testEvent.value.find(e => e.id === currentId)
     // 数组里面找许多项 匹配postdata里面的event id = currentid
-    const posts = testPosts.filter(post => post.eventId === currentId)
+    const posts = testPosts.value.filter(post => post.eventId === currentId)
     console.log(posts)
     return {
       posts,
