@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import Community from './views/Community.vue'
 import CommunityDetail from './views/CommunityDetail.vue'
 import EventDetail from './views/EventDetail.vue'
+import CreatePost from './views/CreatePost.vue'
 
 const routerHistory = createWebHistory()
 const router = createRouter({
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/community/:communityId/:eventId',
       name: 'EventDetail',
       component: EventDetail
+    },
+    {
+      path: '/create',
+      name: 'createPost',
+      component: CreatePost
     }
   ]
 })

@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { GolbalDataProps } from '../store'
+import { GlobalDataProps } from '../store'
 import { useRoute } from 'vue-router'
 import EventList from '../components/EventList.vue'
 // import { testData, testEvent } from '../testData'
@@ -27,17 +27,14 @@ export default defineComponent({
     EventList
   },
   setup () {
-    const store = useStore<GolbalDataProps>()
+    const store = useStore<GlobalDataProps>()
     const testData = computed(() => store.state.communities)
     const testEvent = computed(() => store.state.events)
     const route = useRoute()
     // string => number
     const currentId = +route.params.communityId
-    // 从数组里面找一项 匹配专栏id的testdata
-    const community = testData.value.find(c => c.id === currentId)
-    // 数组里面找许多项 匹配event里面的community id = currentid
-    const event = testEvent.value.filter(event => event.communityId === currentId)
-    // console.log(event)
+    const community = computed(() => store.getters.getCommunityById(currentId))
+    const event = computed(() => store.getters.getEventById(currentId))
     return {
       community,
       event,

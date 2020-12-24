@@ -3,19 +3,14 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
     <router-view></router-view>
-    <post-list :list="list"></post-list>
   </div>
 </template>
 
 <script lang="ts">
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { defineComponent, PropType, reactive, ref } from 'vue'
+import { defineComponent, PropType, reactive, ref, computed } from 'vue'
+import { useStore } from 'vuex'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
-const currentUser: UserProps = {
-  isLogin: true,
-  name: 'えい',
-  id: 3
-}
 
 export default defineComponent({
   name: 'App',
@@ -23,6 +18,8 @@ export default defineComponent({
     GlobalHeader
   },
   setup () {
+    const store = useStore()
+    const currentUser = computed(() => store.state.user)
     return {
       currentUser
     }

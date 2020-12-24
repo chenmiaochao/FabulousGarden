@@ -28,9 +28,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
+import router from '@/router'
 export default defineComponent({
   name: 'Login',
   components: {
@@ -38,7 +41,9 @@ export default defineComponent({
     ValidateForm
   },
   setup () {
-    const inputRef = ref<any>()
+    // const inputRef = ref<any>()
+    const route = useRouter()
+    const store = useStore()
     const emailVal = ref('123@test.com')
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱不能为空' },
@@ -48,21 +53,20 @@ export default defineComponent({
     const passwordRules: RulesProp = [
       { type: 'required', message: '请输入密码' }
     ]
-    // const emailRef = reactive({
-    //   val: '',
-    //   error: false,
-    //   message: ''
-    // })
+
     const onFormSubmit = (result: boolean) => {
       console.log('result', result)
+      if (result) {
+        router.push('/')
+        store.commit('login')
+      }
     }
     return {
       emailRules,
       passwordRules,
       emailVal,
       passwordVal,
-      onFormSubmit,
-      inputRef
+      onFormSubmit
     }
   }
 })

@@ -24,14 +24,14 @@ import { defineComponent, computed } from 'vue'
 import CommunityList from '../components/CommunityList.vue'
 import { testData, testEvent, testPosts } from '../testData'
 import { useStore } from 'vuex'
-import { GolbalDataProps } from '../store'
+import { GlobalDataProps } from '../store'
 export default defineComponent({
   name: 'Home',
   components: {
     CommunityList
   },
   setup () {
-    const store = useStore<GolbalDataProps>()
+    const store = useStore<GlobalDataProps>()
     // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
     const communityData = computed(() => store.state.communities)
     return {

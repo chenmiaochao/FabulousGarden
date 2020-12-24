@@ -18,25 +18,19 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { GolbalDataProps } from '../store'
+import { GlobalDataProps } from '../store'
 import PostList from '../components/PostList.vue'
-// import { testPosts, testEvent } from '../testData'
 export default defineComponent({
   components: {
     PostList
   },
   setup () {
-    const store = useStore<GolbalDataProps>()
-    const testEvent = computed(() => store.state.events)
-    const testPosts = computed(() => store.state.posts)
+    const store = useStore<GlobalDataProps>()
     const route = useRoute()
     // string => number
     const currentId = +route.params.eventId
-    // 从数组里面找一项 匹配专栏id的testdata
-    const event = testEvent.value.find(e => e.id === currentId)
-    // 数组里面找许多项 匹配postdata里面的event id = currentid
-    const posts = testPosts.value.filter(post => post.eventId === currentId)
-    console.log(posts)
+    const event = computed(() => store.getters.getEventById(currentId))
+    const posts = computed(() => store.getters.getPostById(currentId))
     return {
       posts,
       event,
