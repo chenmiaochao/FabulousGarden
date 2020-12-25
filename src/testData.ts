@@ -22,6 +22,7 @@ export interface PostProps {
   content: string;
   image?: string;
   createdAt: string;
+  communityId?: number;
   eventId: number;
 }
 export const testData: CommunityProps[] = [

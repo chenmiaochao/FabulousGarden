@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { CommunityProps, EventProps, PostProps, testData, testEvent, testPosts } from './testData'
+export type { PostProps }
 interface UserProps {
   isLogin: boolean;
   name?: string;
