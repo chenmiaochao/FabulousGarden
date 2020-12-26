@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
-import Community from './views/Community.vue'
+import CreateCommunity from './views/CreateCommunity.vue'
 import CommunityDetail from './views/CommunityDetail.vue'
 import EventDetail from './views/EventDetail.vue'
 import CreatePost from './views/CreatePost.vue'
@@ -22,10 +22,10 @@ const router = createRouter({
       meta: { redirectAlreadyLogin: true }
     },
     {
-      path: '/community',
-      name: 'community',
-      component: Community,
-      meta: { requiredLogin: true }
+      path: '/cretaeC',
+      name: 'createCommunity',
+      component: CreateCommunity,
+      meta: { requiredLogin: false }
     },
     {
       path: '/community/:communityId',
@@ -41,7 +41,7 @@ const router = createRouter({
       path: '/create',
       name: 'createPost',
       component: CreatePost,
-      meta: { requiredLogin: true }
+      meta: { requiredLogin: false }
     }
   ]
 })

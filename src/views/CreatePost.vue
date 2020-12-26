@@ -58,18 +58,18 @@ export default defineComponent({
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { communityId, eventId } = store.state.user
-        if (communityId && eventId) {
+        const { community, event } = store.state.user
+        if (community && event) {
           const newPost: PostProps = {
-            id: new Date().getTime(),
+            _id: new Date().getTime().toString,
             title: titleVal.value,
             content: contentVal.value,
-            communityId,
-            eventId,
+            community,
+            event,
             createdAt: new Date().toLocaleString()
           }
           store.commit('createPost', newPost)
-          router.push({ name: 'EventDetail', params: { communityId: communityId, eventId: eventId } })
+          router.push({ name: 'EventDetail', params: { communityId: community, eventId: event } })
         }
       }
     }

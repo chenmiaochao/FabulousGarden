@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted } from 'vue'
 import CommunityList from '../components/CommunityList.vue'
 import { testData, testEvent, testPosts } from '../testData'
 import { useStore } from 'vuex'
@@ -32,6 +32,9 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    onMounted(() => {
+      store.dispatch('fetchCommunities')
+    })
     // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
     const communityData = computed(() => store.state.communities)
     return {

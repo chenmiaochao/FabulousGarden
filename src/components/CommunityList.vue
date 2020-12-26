@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-
+import store from '../store'
 export interface CommunityProps{
   id: number;
   title: string;
@@ -32,17 +32,17 @@ export default defineComponent({
     }
   }
   // setup (props) {
-  //   const columnList = computed(() => {
-  //     return props.list.map(column => {
-  //       if (!column.avatar) {
-  //         column.avatar = require('@/assets/column.png')
-  //       }
-  //       return column
-  //     })
-  //   })
-  //   return {
-  //     columnList
-  //   }
+  //   // const columnList = computed(() => {
+  //   //   return props.list.map(column => {
+  //   //     if (!column.avatar) {
+  //   //       column.avatar = require('@/assets/column.png')
+  //   //     }
+  //   //     return column
+  //   //   })
+  //   // })
+  //   // return {
+  //   //   columnList
+  //   // }
   // }
 })
 </script>
