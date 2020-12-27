@@ -34,6 +34,8 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     onMounted(() => {
       store.dispatch('fetchCommunities')
+      store.dispatch('fetchEvents')
+      store.dispatch('fetchPosts')
     })
     // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
     const communityData = computed(() => store.state.communities)

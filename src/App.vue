@@ -2,6 +2,7 @@
   <div class="container">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
+    <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
     <router-view></router-view>
   </div>
 </template>
@@ -11,17 +12,20 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { defineComponent, PropType, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
-
+import Loader from './components/Loader.vue'
 export default defineComponent({
   name: 'App',
   components: {
-    GlobalHeader
+    GlobalHeader,
+    Loader
   },
   setup () {
     const store = useStore()
     const currentUser = computed(() => store.state.user)
+    const isLoading = computed(() => store.state.loading)
     return {
-      currentUser
+      currentUser,
+      isLoading
     }
   }
 })

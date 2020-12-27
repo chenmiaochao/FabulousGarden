@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { createStore } from 'vuex'
+import { createStore, Commit } from 'vuex'
 // import { testData, testEvent, testPosts } from './testData'
 
 interface UserProps {
@@ -20,7 +20,7 @@ export interface PostProps {
   excerpt?: string;
   content?: string;
   image?: ImageProps;
-  createdAt: string;
+  createdAt?: string;
   community?: string;
   event?: string;
 }
@@ -37,22 +37,35 @@ export interface EventProps{
   community: string;
 }
 export interface GlobalDataProps {
+  token: string;
+  loading: boolean;
   communities: CommunityProps[];
   events: EventProps[];
   posts: PostProps[];
   user: UserProps;
 }
+const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
+  const { data } = await axios.get(url)
+  commit(mutationName, data)
+}
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationName, data)
+  return data
+}
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
+    loading: false,
     communities: [],
     events: [],
     posts: [],
     user: { isLogin: false, name: 'viking', community: 1, event: 1 }
   },
   mutations: {
-    login (state) {
-      state.user = { ...state, isLogin: true, name: 'chenmiaochao' }
-    },
+    // login (state) {
+    //   state.user = { ...state, isLogin: true, name: 'chenmiaochao' }
+    // },
     createPost (state, newPost) {
       state.posts.push(newPost)
     },
@@ -60,67 +73,75 @@ const store = createStore<GlobalDataProps>({
       state.communities.push(newCommunity)
     },
     fetchCommunities (state, rawdata) {
-      console.log(rawdata.data)
       state.communities = rawdata.data
     },
     fetchCommunity (state, rawdata) {
       state.communities = [rawdata.data]
     },
     fetchEvents (state, rawdata) {
-      state.events = rawdata.data.list
+      state.events = rawdata.data
     },
     fetchEvent (state, rawdata) {
+      // console.log([rawdata.data])
       state.events = [rawdata.data]
+      // console.log(state.events)
     },
     fetchPosts (state, rawdata) {
       state.events = rawdata.data.list
     },
     fetchpost (state, rawdata) {
       state.events = [rawdata.data]
+    },
+    setLoading (state, status) {
+      state.loading = status
+    },
+    login (state, rawdata) {
+      console.log(rawdata)
+      state.token = rawdata.data.token
     }
   },
   actions: {
-    fetchCommunities (context) {
-      axios.get('/api/community').then(res => {
-        context.commit('fetchCommunities', res.data)
-      })
+    fetchCommunities ({ commit }) {
+      getAndCommit('/community', 'fetchCommunities', commit)
     },
     fetchCommunity ({ commit }, cid) {
-      axios.get(`/community/${cid}`).then(res => {
-        commit('fetchCommunity', res.data)
-      })
+      getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
     },
-    fetchEvents (context) {
-      axios.get('/event').then(res => {
-        context.commit('fetchEvents', res.data)
-      })
+    fetchEvents ({ commit }) {
+      getAndCommit('/event', 'fetchEvents', commit)
     },
     fetchEvent ({ commit }, eid) {
-      axios.get(`/event/${eid}`).then(res => {
-        commit('fetchEvent', res.data)
-      })
+      getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
     },
-    fetchPosts (context) {
-      axios.get('/post').then(res => {
-        context.commit('fetchPosts', res.data)
-      })
+    fetchPosts ({ commit }) {
+      getAndCommit('/post', 'fetchPosts', commit)
     },
-    fetchPost ({ commit }, cid) {
-      axios.get(`/post/${cid}`).then(res => {
-        commit('fetchPost', res.data)
-      })
+    fetchPost ({ commit }, pid) {
+      getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+    },
+    login ({ commit }, payload) {
+      return postAndCommit('/user/login', 'login', commit, payload)
     }
   },
   getters: {
     // getter返回可以是对象 也可是函数
+    // カクカクの詳細データ
     getCommunityById: (state) => (id: string) => {
       return state.communities.find(c => c._id === id)
     },
     getEventById: (state) => (id: string): EventProps[] => {
-      return state.events.filter(event => event.community === id)
+      return state.events.filter(event => event._id === id)
     },
     getPostById: (state) => (id: string): PostProps[] => {
-      return state.posts.filter(post => post.event === id)
+      return state.posts.filter(post => post._id === id)
+    },
+    // cidからevent list取得
+    getEventsByCid: (state) => (cid: string): EventProps[] => {
+      return state.events.filter(e => e.community === cid)
+    },
+    // eidからpost list取得
+    getPostsByEid: (state) => (eid: string): PostProps[] => {
+      return state.posts.filter(p => p.event === eid)
     }
   }
 })

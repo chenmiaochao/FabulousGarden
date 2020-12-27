@@ -28,11 +28,14 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const testData = computed(() => store.state.communities)
-    const testEvent = computed(() => store.state.events)
+
     const route = useRoute()
     // string => number
-    const currentId = +route.params.communityId
+    const currentId = route.params.communityId
+    onMounted(() => {
+      store.dispatch('fetchCommunity', currentId)
+      store.dispatch('fetchEvents')
+    })
     const community = computed(() => store.getters.getCommunityById(currentId))
     const event = computed(() => store.getters.getEventById(currentId))
     return {

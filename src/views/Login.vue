@@ -44,12 +44,12 @@ export default defineComponent({
     // const inputRef = ref<any>()
     const route = useRouter()
     const store = useStore()
-    const emailVal = ref('123@test.com')
+    const emailVal = ref('111@test.com')
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }
     ]
-    const passwordVal = ref('123')
+    const passwordVal = ref('111')
     const passwordRules: RulesProp = [
       { type: 'required', message: '请输入密码' }
     ]
@@ -57,8 +57,14 @@ export default defineComponent({
     const onFormSubmit = (result: boolean) => {
       console.log('result', result)
       if (result) {
-        router.push('/')
-        store.commit('login')
+        const payload = {
+          email: emailVal.value,
+          password: passwordVal.value
+        }
+        store.dispatch('login', payload).then(data => {
+          console.log(data)
+          router.push('/')
+        })
       }
     }
     return {

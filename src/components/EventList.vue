@@ -6,7 +6,7 @@
           <img  :src="event.avatar" :alt="event.title" class="rounded-circle border border-light w-25 my-3" >
           <h5 class="card-title">{{event.title}}</h5>
           <p class="card-text text-left">{{event.description}}</p>
-          <router-link :to="`/community/${event.communityId}/${event.id}`" class="btn btn-outline-primary">进入event</router-link>
+          <router-link :to="`/community/${event.community}/${event._id}`" class="btn btn-outline-primary">进入event</router-link>
         </div>
       </div>
     </div>

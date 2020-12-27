@@ -18,7 +18,7 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { GlobalDataProps } from '../store'
+import store, { GlobalDataProps } from '../store'
 import PostList from '../components/PostList.vue'
 export default defineComponent({
   components: {
@@ -27,8 +27,12 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
-    // string => number
-    const currentId = +route.params.eventId
+    // string => number +
+    const currentId = route.params.eventId
+    onMounted(() => {
+      store.dispatch('fetchEvent', currentId)
+      // store.dispatch('fetchPosts')
+    })
     const event = computed(() => store.getters.getEventById(currentId))
     const posts = computed(() => store.getters.getPostById(currentId))
     return {
