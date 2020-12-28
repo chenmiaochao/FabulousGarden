@@ -9,10 +9,12 @@
 
 <script lang="ts">
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { defineComponent, PropType, reactive, ref, computed } from 'vue'
+import axios from 'axios'
+import { defineComponent, PropType, reactive, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
+import { GlobalDataProps } from './store'
 export default defineComponent({
   name: 'App',
   components: {
@@ -20,9 +22,16 @@ export default defineComponent({
     Loader
   },
   setup () {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
+    const token = computed(() => store.state.token)
+    onMounted(() => {
+      if (!currentUser.value.isLogin && token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
+        store.dispatch('fetchCurrentUser')
+      }
+    })
     return {
       currentUser,
       isLoading
