@@ -151,6 +151,7 @@ const store = createStore<GlobalDataProps>({
   getters: {
     // getter返回可以是对象 也可是函数
     // カクカクの詳細データ
+
     getCommunityById: (state) => (id: string) => {
       return state.communities.find(c => c._id === id)
     },
