@@ -119,25 +119,25 @@ const store = createStore<GlobalDataProps>({
   },
   actions: {
     fetchCommunities ({ commit }) {
-      getAndCommit('/community', 'fetchCommunities', commit)
+      return getAndCommit('/community', 'fetchCommunities', commit)
     },
     fetchCommunity ({ commit }, cid) {
-      getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
+      return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
     },
     fetchEvents ({ commit }) {
-      getAndCommit('/event', 'fetchEvents', commit)
+      return getAndCommit('/event', 'fetchEvents', commit)
     },
     fetchEvent ({ commit }, eid) {
-      getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
+      return getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
     },
     fetchPosts ({ commit }) {
-      getAndCommit('/post', 'fetchPosts', commit)
+      return getAndCommit('/post', 'fetchPosts', commit)
     },
     fetchPost ({ commit }, pid) {
-      getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+      return getAndCommit(`/post/${pid}`, 'fetchPost', commit)
     },
     fetchCurrentUser ({ commit }) {
-      getAndCommit('/user/current', 'fetchCurrentUser', commit)
+      return getAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
