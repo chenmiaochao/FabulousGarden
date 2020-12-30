@@ -5,7 +5,7 @@
         <label class="form-label">电子邮箱</label>
         <validate-input
           :rules="emailRules" v-model="emailVal"
-          placeholder="请输入邮箱地址"
+          placeholder="しもしもメーアドよこしな"
           type="text"
           ref="inputRef"
         />
@@ -16,7 +16,7 @@
           <validate-input
             :rules="passwordRules"
             v-model="passwordVal"
-            placeholder="请输入密码"
+            placeholder="しもしもパスワードよこしな"
             type="password"
           />
         </div>
@@ -33,6 +33,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
+import createMessage from '../hooks/createMessage'
 import router from '@/router'
 export default defineComponent({
   name: 'Login',
@@ -46,12 +47,12 @@ export default defineComponent({
     const store = useStore()
     const emailVal = ref('111@test.com')
     const emailRules: RulesProp = [
-      { type: 'required', message: '电子邮箱不能为空' },
-      { type: 'email', message: '请输入正确的电子邮箱格式' }
+      { type: 'required', message: 'メールアドレスは空じゃん、あかんで' },
+      { type: 'email', message: '正確なメルアドを入力セー' }
     ]
     const passwordVal = ref('111')
     const passwordRules: RulesProp = [
-      { type: 'required', message: '请输入密码' }
+      { type: 'required', message: 'しもしもパスワードよこしな' }
     ]
 
     const onFormSubmit = (result: boolean) => {
@@ -61,9 +62,13 @@ export default defineComponent({
           email: emailVal.value,
           password: passwordVal.value
         }
-        store.dispatch('loginAndfetch', payload).then(data => {
-          console.log(data)
-          router.push('/')
+        store.dispatch('loginAndFetch', payload).then(data => {
+          createMessage('成功　２秒後 topへ飛ばし', 'success')
+          setTimeout(() => {
+            router.push('/')
+          }, 2000)
+        }).catch(e => {
+          console.log(e)
         })
       }
     }

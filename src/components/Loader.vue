@@ -8,7 +8,7 @@
       <div class="spinner-border text-primary" role="status">
         <!-- <span class="visually-hidden">{{ text || 'loading'}}</span> -->
       </div>
-      <p v-if="text" class="text-primary small">{{text}}</p>
+      <p v-if="text" class="text-primary display-1">{{text}}</p>
     </div>
   </div>
 </teleport>

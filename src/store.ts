@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { createStore, Commit } from 'vuex'
 // import { testData, testEvent, testPosts } from './testData'
-
+export interface ResponseType<P = {}> {
+  code: number;
+  msg: string;
+  data: P;
+}
 export interface UserProps {
   isLogin: boolean;
   name?: string;
@@ -9,10 +13,11 @@ export interface UserProps {
   community?: string;
   event?: string;
 }
-interface ImageProps {
+export interface ImageProps {
   _id?: string;
-  url?: string;
+  imgUrl?: string;
   createdAt?: string;
+  latlng?: object;
 }
 export interface PostProps {
   _id?: any;
@@ -37,12 +42,17 @@ export interface EventProps{
   community: string;
 }
 export interface GlobalDataProps {
+  error: GlobalErrorProps;
   token: string;
   loading: boolean;
   communities: CommunityProps[];
   events: EventProps[];
   posts: PostProps[];
   user: UserProps;
+}
+export interface GlobalErrorProps {
+  status: boolean;
+  message?: string;
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url)
@@ -55,6 +65,7 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
 }
 const store = createStore<GlobalDataProps>({
   state: {
+    error: { status: false },
     token: localStorage.getItem('token') || '',
     loading: false,
     communities: [],
@@ -91,11 +102,14 @@ const store = createStore<GlobalDataProps>({
     setLoading (state, status) {
       state.loading = status
     },
+    setError (state, e: GlobalErrorProps) {
+      state.error = e
+    },
     fetchCurrentUser (state, rawdata) {
       state.user = { isLogin: true, ...rawdata }
     },
     login (state, rawdata) {
-      console.log('front-token', rawdata.token)
+      console.log('front-login-data', rawdata)
       // backendからtokenを取得、localStorageに設置
       const token = rawdata.token
       localStorage.setItem('token', token)

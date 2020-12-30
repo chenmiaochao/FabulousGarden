@@ -2,6 +2,11 @@
   <div class="create-post-page">
     <!-- <h4>{{isEditMode ? '编辑文章' : '新建文章'}}</h4> -->
     <h4>新建文章</h4>
+    <uploader :action="'/post/upload'" @file-uploaded="onFileUploaded">
+      <template #uploaded="dataProps">
+        <img :src="dataProps.uploadedData.data.imgUrl" width="500" />
+      </template>
+    </uploader>
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
@@ -35,14 +40,18 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
-import { GlobalDataProps, PostProps } from '../store'
+import { GlobalDataProps, PostProps, ImageProps, ResponseType } from '../store'
+import axios from 'axios'
+import Uploader from '../components/Uploader.vue'
+import createMessage from '../hooks/createMessage'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 export default defineComponent({
   name: 'CreatePost',
   components: {
     ValidateInput,
-    ValidateForm
+    ValidateForm,
+    Uploader
   },
   setup () {
     const titleVal = ref('')
@@ -73,12 +82,16 @@ export default defineComponent({
         }
       }
     }
+    const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
+      createMessage('上传图片成功', 'success')
+    }
     return {
       titleRules,
       titleVal,
       contentVal,
       contentRules,
-      onFormSubmit
+      onFormSubmit,
+      onFileUploaded
     }
   }
 })
