@@ -11,6 +11,7 @@
         <p class="text-muted">{{community.description}}</p>
       </div>
     </div>
+    <div v-else>{{community}}community</div>
     <event-list :event="event"></event-list>
   </div>
 </template>
@@ -21,6 +22,7 @@ import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store'
 import { useRoute } from 'vue-router'
 import EventList from '../components/EventList.vue'
+import axios from 'axios'
 // import { testData, testEvent } from '../testData'
 export default defineComponent({
   components: {
@@ -28,16 +30,16 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-
     const route = useRoute()
     // string => number
     const currentId = route.params.communityId
+    // console.log(currentId)
     onMounted(() => {
-      store.dispatch('fetchCommunity', currentId)
       store.dispatch('fetchEvents')
     })
     const community = computed(() => store.getters.getCommunityById(currentId))
-    const event = computed(() => store.getters.getEventById(currentId))
+    const event = computed(() => store.getters.getEventsByCid(currentId))
+
     return {
       community,
       event,

@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import CreateCommunity from './views/CreateCommunity.vue'
 import CommunityDetail from './views/CommunityDetail.vue'
 import EventDetail from './views/EventDetail.vue'
+import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import axios from 'axios'
 import store from './store'
@@ -39,6 +40,11 @@ const router = createRouter({
       component: EventDetail
     },
     {
+      path: '/community/:communityId/:eventId/:postId',
+      name: 'postDetail',
+      component: PostDetail
+    },
+    {
       path: '/create',
       name: 'createPost',
       component: CreatePost,
@@ -60,7 +66,7 @@ router.beforeEach((to, from, next) => {
         }
       }).catch(e => {
         console.log(e)
-        localStorage.removeItem('token')
+        store.commit('logout')
         next('/login')
       })
     } else {

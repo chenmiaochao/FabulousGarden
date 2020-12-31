@@ -2,7 +2,6 @@
   <div class="container">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
-    <h1>{{error.message}}</h1>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
     <router-view></router-view>
   </div>
@@ -43,8 +42,7 @@ export default defineComponent({
     })
     return {
       currentUser,
-      isLoading,
-      error
+      isLoading
     }
   }
 })

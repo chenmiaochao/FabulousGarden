@@ -14,6 +14,7 @@
       </div>
       <community-list :list="list"></community-list>
     </section>
+    <post-list :posts="posts"></post-list>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
 
   </div>
@@ -22,25 +23,27 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
 import CommunityList from '../components/CommunityList.vue'
-import { testData, testEvent, testPosts } from '../testData'
+import PostList from '../components/PostList.vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store'
 export default defineComponent({
   name: 'Home',
   components: {
-    CommunityList
+    CommunityList,
+    PostList
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     onMounted(() => {
       store.dispatch('fetchCommunities')
-      store.dispatch('fetchEvents')
       store.dispatch('fetchPosts')
     })
     // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
     const communityData = computed(() => store.state.communities)
+    const posts = computed(() => store.state.posts)
     return {
-      list: communityData
+      list: communityData,
+      posts
     }
   }
 })

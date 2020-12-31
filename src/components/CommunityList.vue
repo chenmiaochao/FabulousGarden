@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div v-for="community in list" :key="community.id" class="col-4  mb-4">
+    <div v-for="community in list" :key="community._id" class="col-4  mb-4">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
           <img  :src="community.avatar" :alt="community.title" class="rounded-circle border border-light w-25 my-3" >

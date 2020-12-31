@@ -3,7 +3,8 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import App from './App.vue'
-
+import Vant from 'vant'
+import 'vant/lib/index.css'
 // axios.get('/api/blog/list').then((res) => {
 //   console.log(res)
 // })
@@ -30,4 +31,5 @@ axios.interceptors.response.use(config => {
 const app = createApp(App)
 app.use(router)
 app.use(store)
+app.use(Vant)
 app.mount('#app')

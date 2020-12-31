@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
 
-    <router-link to="#" class="navbar-brand"><img src="@/assets/cat.png" width="120" height="120" class="d-inline-block align-center" alt="" loading="lazy">Fabulous Garden</router-link>
+    <router-link to="/" class="navbar-brand"><img src="@/assets/cat.png" width="120" height="120" class="d-inline-block align-center" alt="" loading="lazy">Fabulous Garden</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inlint-item"><router-link to="/login" class="btn btn-outline-light my-2">ログイン</router-link></li>
       <li class="list-inlint-item"><router-link to="/login" class="btn btn-outline-light my-2">サインアップ</router-link></li>

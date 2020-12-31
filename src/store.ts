@@ -21,10 +21,11 @@ export interface ImageProps {
 }
 export interface PostProps {
   _id?: any;
+  author?: string;
   title: string;
   excerpt?: string;
   content?: string;
-  image?: ImageProps;
+  image?: string;
   createdAt?: string;
   community?: string;
   event?: string;
@@ -59,6 +60,7 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
   commit(mutationName, data)
 }
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  console.log('url', url)
   const { data } = await axios.post(url, payload)
   commit(mutationName, data)
   return data
@@ -86,6 +88,11 @@ const store = createStore<GlobalDataProps>({
     fetchCommunity (state, rawdata) {
       state.communities = [rawdata.data]
     },
+    fetchCommunitiesWithEvents (state, rawdata) {
+      // console.log('fetchCommunitiesWithEvents', rawdata.data)
+      state.communities = rawdata.data
+      // console.log(state.communities)
+    },
     fetchEvents (state, rawdata) {
       state.events = rawdata.data
     },
@@ -94,10 +101,12 @@ const store = createStore<GlobalDataProps>({
       state.events = [rawdata.data]
     },
     fetchPosts (state, rawdata) {
-      state.events = rawdata.data.list
+      state.posts = rawdata.data
+      // console.log(state.posts)
     },
-    fetchpost (state, rawdata) {
-      state.events = [rawdata.data]
+    fetchPost (state, rawdata) {
+      // console.log(rawdata)
+      state.posts = [rawdata.data]
     },
     setLoading (state, status) {
       state.loading = status
@@ -115,6 +124,11 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem('token', token)
       state.token = token
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
+    logout (state) {
+      state.token = ''
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
@@ -123,6 +137,9 @@ const store = createStore<GlobalDataProps>({
     },
     fetchCommunity ({ commit }, cid) {
       return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
+    },
+    fetchCommunitiesWithEvents ({ commit }) {
+      return getAndCommit('/community/all', 'fetchCommunitiesWithEvents', commit)
     },
     fetchEvents ({ commit }) {
       return getAndCommit('/event', 'fetchEvents', commit)
@@ -135,6 +152,9 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPost ({ commit }, pid) {
       return getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/post/new', 'createPost', commit, payload)
     },
     fetchCurrentUser ({ commit }) {
       return getAndCommit('/user/current', 'fetchCurrentUser', commit)
@@ -151,22 +171,23 @@ const store = createStore<GlobalDataProps>({
   getters: {
     // getter返回可以是对象 也可是函数
     // カクカクの詳細データ
-
     getCommunityById: (state) => (id: string) => {
       return state.communities.find(c => c._id === id)
     },
-    getEventById: (state) => (id: string): EventProps[] => {
-      return state.events.filter(event => event._id === id)
+    getEventById: (state) => (id: string) => {
+      // console.log(state.events)
+      return state.events.find(event => event._id === id)
     },
-    getPostById: (state) => (id: string): PostProps[] => {
-      return state.posts.filter(post => post._id === id)
+    getPostById: (state) => (id: string) => {
+      return state.posts.find(post => post._id === id)
     },
-    // cidからevent list取得
-    getEventsByCid: (state) => (cid: string): EventProps[] => {
+    // cidでからevent list取得
+    getEventsByCid: (state) => (cid: string) => {
       return state.events.filter(e => e.community === cid)
     },
     // eidからpost list取得
-    getPostsByEid: (state) => (eid: string): PostProps[] => {
+    getPostsByEid: (state) => (eid: string) => {
+      console.log('state.posts', state.posts)
       return state.posts.filter(p => p.event === eid)
     }
   }

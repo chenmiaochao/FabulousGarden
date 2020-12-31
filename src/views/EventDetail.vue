@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue'
+import { defineComponent, computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import store, { GlobalDataProps } from '../store'
@@ -27,14 +27,14 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
-    // string => number +
     const currentId = route.params.eventId
     onMounted(() => {
       store.dispatch('fetchEvent', currentId)
-      // store.dispatch('fetchPosts')
+      // store.dispatch('fetchEvents')
+      store.dispatch('fetchPosts')
     })
     const event = computed(() => store.getters.getEventById(currentId))
-    const posts = computed(() => store.getters.getPostById(currentId))
+    const posts = computed(() => store.getters.getPostsByEid(currentId))
     return {
       posts,
       event,
