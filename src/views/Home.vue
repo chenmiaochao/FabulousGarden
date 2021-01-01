@@ -1,18 +1,18 @@
 <template>
-  <div class="home-page">
-
+  <div class="home-page col-8">
     <section class="py-5 text-center container">
       <!-- <event-list :list2="list2"></event-list> -->
       <div class="row py-lg-5">
         <div class="col-lg-6 com-md-8 mx-auto">
           <img src="../assets/4.png" alt="callout" class="w-50"/>
-          <h2 class="font-weight-light">随心写作,自由表达</h2>
+          <h2 class="font-weight-light">心のままにシェアしよう</h2>
           <p>
-            <router-link to="/create" class="btn btn-primary my-2">开始写文章</router-link>
+            <router-link to="/cretaeC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+            <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
           </p>
         </div>
       </div>
-      <community-list :list="list"></community-list>
+      <community-list :list="list" :type="'default'"></community-list>
     </section>
     <post-list :posts="posts"></post-list>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
@@ -48,3 +48,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.home-page{
+  margin-left: 18%;
+}
+</style>

@@ -226,13 +226,14 @@ export default defineComponent({
           image: imgVal.value,
           community: communityVal.value,
           event: eventVal.value,
-          createdAt: new Date().toLocaleString()
+          createdAt: new Date().toLocaleString(),
+          createdAtMonth: new Date().toLocaleString().split('/')[1]
         }
         store.dispatch('createPost', newPost).then(data => {
           console.log(data)
           createMessage('成功２秒後 topへ飛ばし', 'success')
           setTimeout(() => {
-            router.push(`/community/${communityVal.value}/${eventVal.value}/${data.data}`)
+            router.push(`/community/${data.data._id}`)
           }, 2000)
         }).catch(e => {
           console.log(e)

@@ -1,6 +1,6 @@
 <template>
   <div class="post-list">
-    <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm">
+    <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm col">
       <van-image
         width="10rem"
         height="10rem"

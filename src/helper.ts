@@ -1,4 +1,5 @@
-// import { ColumnProps, ImageProps, UserProps } from './store'
+import axios from 'axios'
+import { CommunityProps, EventProps, ImageProps, UserProps } from './store'
 
 // export function generateFitUrl (data: ImageProps, width: number, height: number, format = ['m_pad']) {
 //   if (data && data.url) {
@@ -9,16 +10,18 @@
 //   }
 // }
 
-// export function addColumnAvatar (data: ColumnProps | UserProps, width: number, height: number) {
-//   if (data.avatar) {
-//     generateFitUrl(data.avatar, width, height)
-//   } else {
-//     const parseCol = data as ColumnProps
-//     data.avatar = {
-//       fitUrl: require(parseCol.title ? '@/assets/column.jpg' : '@/assets/avatar.jpg')
-//     }
-//   }
-// }
+export function addColumnAvatar (data: CommunityProps | EventProps, width: number, height: number) {
+  if (data.avatar) {
+    // generateFitUrl(data.avatar, width, height)
+  } else {
+    // const parseCol = data as ColumnProps
+    axios.get('https://api.thecatapi.com/v1/images/search?limt=1').then(res => {
+      console.log(res.data[0].url)
+      data.avatar = res.data[0].url
+    })
+  }
+}
+
 interface CheckCondition {
   format?: string[];
   size?: number;

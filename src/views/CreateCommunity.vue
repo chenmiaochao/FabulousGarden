@@ -24,7 +24,7 @@
       <template #submit>
         <!-- <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
 </button> -->
-        <button class="btn btn-primary btn-large">发表文章
+        <button class="btn btn-primary btn-large">コミュニティ創生
 </button>
       </template>
     </validate-form>
@@ -36,6 +36,7 @@ import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, CommunityProps } from '../store'
+import createMessage from '../hooks/createMessage'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 export default defineComponent({
@@ -60,17 +61,27 @@ export default defineComponent({
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { community, event } = store.state.user
-        if (community && event) {
+        if (store.state.user.name) {
           const newCommunity: CommunityProps = {
             communityName: communityNameVal.value,
-            description: contentVal.value
+            description: contentVal.value,
+            author: store.state.user.name
           }
-          store.commit('createPost', newCommunity)
-          router.push('/')
+          // store.commit('createCommunity', newCommunity)
+          // router.push('/')
+          store.dispatch('createCommunity', newCommunity).then(data => {
+            console.log(data)
+            createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
+            setTimeout(() => {
+              router.push(`/community/${data.data}`)
+            }, 2000)
+          }).catch(e => {
+            console.log(e)
+          })
         }
       }
     }
+
     return {
       contentVal,
       contentRules,

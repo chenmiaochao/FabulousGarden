@@ -27,11 +27,13 @@ export interface PostProps {
   content?: string;
   image?: string;
   createdAt?: string;
+  createdAtMonth?: string;
   community?: string;
   event?: string;
 }
 export interface CommunityProps{
   _id?: string;
+  author: string;
   communityName: string;
   avatar?: string;
   description: string;
@@ -60,7 +62,6 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
   commit(mutationName, data)
 }
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
-  console.log('url', url)
   const { data } = await axios.post(url, payload)
   commit(mutationName, data)
   return data
@@ -138,6 +139,9 @@ const store = createStore<GlobalDataProps>({
     fetchCommunity ({ commit }, cid) {
       return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
     },
+    createCommunity ({ commit }, payload) {
+      return postAndCommit('/community/new', 'createCommunity', commit, payload)
+    },
     fetchCommunitiesWithEvents ({ commit }) {
       return getAndCommit('/community/all', 'fetchCommunitiesWithEvents', commit)
     },
@@ -187,8 +191,17 @@ const store = createStore<GlobalDataProps>({
     },
     // eidからpost list取得
     getPostsByEid: (state) => (eid: string) => {
-      console.log('state.posts', state.posts)
+      // console.log('state.posts', state.posts)
       return state.posts.filter(p => p.event === eid)
+    },
+    getPostsByCid: (state) => (cid: string) => {
+      // console.log('state.posts by cid', state.posts)
+      return state.posts.filter(p => p.community === cid)
+    },
+    getPostsByCidAndSelectFromThisMonth: (state) => (cid: string) => {
+      // console.log('state.posts by cid', state.posts)
+      const array = state.posts.filter(p => p.community === cid)
+      return array.filter(p => p.createdAtMonth === new Date().toLocaleString().split('/')[1])
     }
   }
 })

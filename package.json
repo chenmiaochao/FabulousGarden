@@ -14,7 +14,9 @@
     "mitt": "^2.1.0",
     "vant": "^3.0.1",
     "vue": "^3.0.0",
+    "vue-burger-menu": "^2.0.5",
     "vue-router": "^4.0.1",
+    "vue-sidebar-menu": "^5.0.0-alpha.4",
     "vuex": "^4.0.0-rc.2"
   },
   "devDependencies": {

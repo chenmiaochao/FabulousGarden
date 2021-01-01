@@ -3,7 +3,10 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
-    <router-view></router-view>
+    <div class="row">
+      <community-list :list="list" :type="'round'" class="col-4"></community-list>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -14,13 +17,15 @@ import { defineComponent, PropType, reactive, ref, computed, onMounted, watch } 
 import { useStore } from 'vuex'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
+import CommunityList from './components/CommunityList.vue'
 import { GlobalDataProps } from './store'
 import createMessage from './hooks/createMessage'
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    Loader
+    Loader,
+    CommunityList
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -28,7 +33,9 @@ export default defineComponent({
     const isLoading = computed(() => store.state.loading)
     const token = computed(() => store.state.token)
     const error = computed(() => store.state.error)
+    const communityData = computed(() => store.state.communities)
     onMounted(() => {
+      store.dispatch('fetchCommunities')
       if (!currentUser.value.isLogin && token) {
         axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
         store.dispatch('fetchCurrentUser')
@@ -40,9 +47,11 @@ export default defineComponent({
         createMessage(message, 'error')
       }
     })
+
     return {
       currentUser,
-      isLoading
+      isLoading,
+      list: communityData
     }
   }
 })
@@ -55,6 +64,6 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 5px;
 }
 </style>

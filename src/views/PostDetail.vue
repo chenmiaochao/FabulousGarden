@@ -25,13 +25,12 @@
       </div>
     </div>
   </div>
-
   </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios'
-import { defineComponent, computed, onMounted, ref } from 'vue'
+import { defineComponent, computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import store, { GlobalDataProps } from '../store'
@@ -39,19 +38,31 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
-    const currentId = route.params.postId
+    const currentId: any = ref('')
+    currentId.value = route.params.postId
     const newPost = ref('')
     onMounted(() => {
-      store.dispatch('fetchPost', currentId)
+      store.dispatch('fetchPost', currentId.value)
       // store.dispatch('fetchEvents')
     })
-    console.log(currentId)
-    axios.get(`/post/${currentId}`).then(res => {
-      console.log(res.data)
-      newPost.value = res.data
+    watch(() => route.params.postId, () => {
+      currentId.value = route.params.postId
+      // console.log(currentId.value)
+      const community = computed(() => store.getters.getCommunityById(currentId.value))
+      const event = computed(() => store.getters.getEventsByCid(currentId.value))
+      const post = computed(() => store.getters.getPostsByCid(currentId.value))
+      // axios.get('https://api.thecatapi.com/v1/images/search?limt=1').then(res => {
+      //   console.log(res.data[0].url)
+      //   community.value.avatar = res.data[0].url
+      // })
     })
-    const post = computed(() => store.getters.getPostById(currentId))
-    console.log(post)
+    // console.log(currentId)
+    // axios.get(`/post/${currentId.value}`).then(res => {
+    //   console.log(res.data)
+    //   newPost.value = res.data
+    // })
+    const post = computed(() => store.getters.getPostById(currentId.value))
+    // console.log(post)
     return {
       post,
       route,
