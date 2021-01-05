@@ -68,6 +68,7 @@ export default defineComponent({
       //   community.value.avatar = res.data[0].url
       // })
     })
+    store.dispatch('fetchEvents')
     const community = computed(() => store.getters.getCommunityById(currentId.value))
     const event = computed(() => store.getters.getEventsByCid(currentId.value))
     const post = computed(() => store.getters.getPostsByCid(currentId.value))

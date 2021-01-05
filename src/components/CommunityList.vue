@@ -3,11 +3,18 @@
     <div v-for="community in list" :key="community._id" class="col-4  mb-4">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
-          <img  :src="community.avatar" :alt="community.ticommunityNametle" class="rounded-circle border border-light w-25 my-3" >
+        <van-image
+          width="100%"
+          height="auto"
+          fit="cover"
+          :src="community.avatar"
+          :alt="community.ticommunityNametle"
+        />
+          <!-- <img  :src="community.avatar" :alt="community.ticommunityNametle" class="rounded-circle border border-light w-25 my-3" > -->
           <h5 class="card-title">{{community.communityName}}</h5>
           <p class="card-text text-left">{{community.description}}</p>
           <!-- <router-link :to="/community/+{ name: 'CommunityDetail', params: { id: community.id } }" class="btn btn-outline-primary">进入coummunity</router-link> -->
-          <router-link :to="`/community/${community._id}`" class="btn btn-outline-primary">进入coummunity</router-link>
+          <router-link :to="`/community/${community._id}`" class="btn btn-outline-primary w-100">coummunityへ</router-link>
         </div>
       </div>
     </div>

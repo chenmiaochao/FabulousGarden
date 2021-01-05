@@ -3,7 +3,13 @@
     <h1>EventDetial</h1>
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="event">
       <div class="col-3 text-center">
-        <img :src="event.avatar && event.avatar.fitUrl" :alt="event.title" class="rounded-circle border w-100">
+        <van-image
+          width="10rem"
+          height="10rem"
+          round
+          fit="contain"
+          :src="event.avatar"
+        />
       </div>
       <div class="col-9">
         <h4>{{event.title}}</h4>

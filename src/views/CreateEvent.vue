@@ -1,153 +1,198 @@
 /* eslint-disable @typescript-eslint/camelcase */
 <template>
   <div class="create-post-page">
-    <h2>cretae Event</h2>
+    <h1>cretae Event</h1>
     <!-- <h4>{{isEditMode ? 'edit Event' : 'cretae Event'}}</h4> -->
 
-    <van-checkbox-group v-model="checked">
-      <h2><van-icon name="thumb-circle-o" />クリックし、コミュニティを選択しよう</h2>
-      <van-cell-group :title="''">
-        <van-cell
-          v-for="(item) in communities"
-          clickable
-          :key="item"
-          @click="toggle(item._id)"
-          :class="isComClicked == item._id ? 'clicked':''"
-        >
-        <template #icon>
-          <van-image :src="item.avatar"
-            width="5rem"
-            height="5rem"
-            fit="contain"
-            round
-          />
-        </template>
-        <template #title>
-          {{item.title}}
-        </template>
-        <template #label>
-          {{item.description}}
-        </template>
-        </van-cell>
-      </van-cell-group>
-    </van-checkbox-group>
+    <div class="box2">
+      <van-checkbox-group v-model="checked">
+        <h2><van-icon name="thumb-circle-o" />クリックし、コミュニティを選択しよう</h2>
+        <van-cell-group :title="''">
+          <van-cell
+            v-for="(item) in communities"
+            clickable
+            :key="item"
+            @click="toggle(item._id)"
+            :class="isComClicked == item._id ? 'clicked':''"
+          >
+          <template #icon>
+            <van-image :src="item.avatar"
+              width="5rem"
+              height="5rem"
+              fit="contain"
+              round
+            />
+          </template>
+          <template #title>
+            {{item.title}}
+          </template>
+          <template #label>
+            {{item.description}}
+          </template>
+          </van-cell>
+        </van-cell-group>
+      </van-checkbox-group>
+    </div>
+    <van-divider
+      :style="{ color: '#00ff7f', borderColor: '#ffffff', padding: '0 16px' }"
+    />
 
     <validate-form @form-submit="onFormSubmit">
-      <div class="mb-3">
-        <label class="form-label">イベント名：</label>
-        <validate-input
-          :rules="eventNameRules" v-model="eventNameVal"
-          placeholder="イベント名称を入力してください"
-          type="text"
+      <div class="box2">
+        <div class="mb-3">
+          <van-icon name="thumb-circle-o" />
+          <label class="form-label">イベント名：</label>
+          <validate-input
+            :rules="eventNameRules" v-model="eventNameVal"
+            placeholder="イベント名称を入力してください"
+            type="text"
+          />
+        </div>
+        <van-divider
+        :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
         />
+        <div>
+        <van-icon name="thumb-circle-o" />
+          <label class="form-label">イベント年月日を選んでください</label>
+          <van-datetime-picker
+            v-model="currentDate"
+            cancel-button-text=" "
+            confirm-button-text=" "
+            type="date"
+            title=""
+            :min-date="minDate"
+            :max-date="maxDate"
+          />
+        </div>
+        <van-divider
+        :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+        />
+        <div class="mb-3">
+          <van-icon name="thumb-circle-o" />
+          <label class="form-label">イベント詳細：</label>
+          <validate-input
+            rows="10"
+            tag="textarea"
+            placeholder="イベント詳細を入力してください"
+            :rules="contentRules"
+            v-model="contentVal"
+          />
+        </div>
       </div>
-      <van-datetime-picker
-        v-model="currentDate"
-        cancel-button-text=" "
-        confirm-button-text=" "
-        type="date"
-        title="イベント年月日を選んでください"
-        :min-date="minDate"
-        :max-date="maxDate"
+      <van-divider
+        :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
       />
-      <div class="mb-3">
-        <label class="form-label">イベント詳細：</label>
-        <validate-input
-          rows="10"
-          tag="textarea"
-          placeholder="イベント詳細を入力してください"
-          :rules="contentRules"
-          v-model="contentVal"
+
+      <div class="box2">
+        <div class="mt-3 mb-3">
+        <h2 class="mt-1 mb-1">イベント場所 选择/入力</h2>
+        <div class="d-flex justify-content-center mt-4 mb-4">
+          <van-radio-group v-model="placeChecked">
+            <van-radio name="1">
+              場所を選択
+              <template #icon="props">
+                <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
+              </template>
+            </van-radio>
+            <van-radio name="2">
+              場所を検索
+              <template #icon="props">
+                <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
+              </template>
+            </van-radio>
+                    <van-radio name="3">
+              場所を入力
+              <template #icon="props">
+                <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
+              </template>
+            </van-radio>
+          </van-radio-group>
+        </div>
+        </div>
+        <van-divider
+          :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+        />
+        <div class="mt-3 mb-3" v-if="placeChecked =='1'">
+          <!-- <label class="form-label" @click="onPlaceCheckedOn1">イベント場所：選択</label> -->
+          <van-area
+            title="イベント場所：選択"
+            :area-list="areaList"
+            :columns-placeholder="['選びましょう', '選びましょう', '選びましょう']"
+            cancel-button-text=" "
+            @confirm="onAddrConfirm"
+          >
+          </van-area>
+          <div v-if="haveHotelData" >
+          <van-divider
+            :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+          />
+          <GoogleMap
+              :apiKey="apiKey"
+              libraries="geometry,drawing,places"
+              :options="{
+                center: markers.value[0].position,
+                zoom: 13,
+              }"
+              :markers="markers.value"
+            />
+            <van-divider
+              :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+            />
+            <label class="form-label">クリックして選択ぴえん</label>
+            <div v-for="(item) in hotels.value.data" :key="item">
+            <van-card
+              :price="item.HotelName[0]"
+              :desc="item.HotelCaption[0]"
+              :thumb="item.PictureURL[0]"
+              @click="onClickHotel(item)"
+            />
+            </div>
+          </div>
+        <van-divider
+          :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+        />
+        </div>
+
+        <div class="mb-3 mt-3">
+          <label class="form-label">イベント場所：</label>
+          <validate-input
+            rows="10"
+            placeholder="イベント場所を入力してください"
+            :rules="placeRules"
+            v-model="placeVal"
+          >
+          </validate-input>
+        <div class="mb-3 mt-3" v-if="placeChecked =='2'">
+          <button @click.prevent="onClickPlaceSearch(placeVal)"
+            class="btn btn-secondary btn-large"
+          >
+          場所検索 selectAddrs
+          </button>
+        </div>
+        <div v-if="placeChecked =='2'">
+        <van-divider
+          :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+        />
+          <p>クリックして選択ぴえん</p>
+          <div v-for="(add) in selectAddrs.data" :key="add">
+            <van-cell
+              center
+              :title="add['text']"
+              :label="add['address']"
+              @click.prevent="onClickAddr(add)"
+              icon="location-o"
+            />
+          </div>
+        <van-divider
+          :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
+        />
+        </div>
+        </div>
+        <van-divider
+          :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
         />
       </div>
-      <div class="mt-3 mb-3">
-      <h2 class="mt-1 mb-1">选择/入力</h2>
-
-      <van-radio-group v-model="placeChecked">
-        <van-radio name="1">
-          場所を選択
-          <template #icon="props">
-            <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
-          </template>
-        </van-radio>
-        <van-radio name="2">
-          場所を検索
-          <template #icon="props">
-            <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
-          </template>
-        </van-radio>
-                <van-radio name="3">
-          場所を入力
-          <template #icon="props">
-            <img class="img-icon" :src="props.checked ? activeIcon : inactiveIcon" />
-          </template>
-        </van-radio>
-      </van-radio-group>
-      </div>
-      <div class="mt-3 mb-3" v-if="placeChecked =='1'">
-        <!-- <label class="form-label" @click="onPlaceCheckedOn1">イベント場所：選択</label> -->
-        <van-area
-          title="イベント場所：選択"
-          :area-list="areaList"
-          :columns-placeholder="['選びましょう', '選びましょう', '選びましょう']"
-          cancel-button-text=" "
-          @confirm="onAddrConfirm"
-        >
-        </van-area>
-        <div v-if="haveHotelData" >
-
-        <GoogleMap
-            :apiKey="apiKey"
-            libraries="geometry,drawing,places"
-            :options="{
-              center: markers.value[0].position,
-              zoom: 13,
-            }"
-            :markers="markers.value"
-          />
-          <label class="form-label">クリックして選択ぴえん</label>
-          <div v-for="(item) in hotels.value.data" :key="item">
-          <van-card
-            :price="item.HotelName[0]"
-            :desc="item.HotelCaption[0]"
-            :thumb="item.PictureURL[0]"
-            @click="onClickHotel(item)"
-          />
-          </div>
-        </div>
-        <div id="map"></div>
-      </div>
-      <div class="mb-3 mt-3">
-        <label class="form-label">イベント場所：</label>
-        <validate-input
-          rows="10"
-          placeholder="イベント場所を入力してください"
-          :rules="placeRules"
-          v-model="placeVal"
-        >
-        </validate-input>
-      <div class="mb-3 mt-3" v-if="placeChecked =='2'">
-        <button @click.prevent="onClickPlaceSearch(placeVal)"
-          class="btn btn-secondary btn-large"
-        >
-        場所検索 selectAddrs
-        </button>
-      </div>
-      <div v-if="placeChecked =='2'">
-        <label class="form-label" v-if="selectAddrs.data !== 0">クリックして選択ぴえん</label>
-        <div v-for="(add) in selectAddrs.data" :key="add">
-          <van-cell
-            center
-            :title="add['text']"
-            :label="add['address']"
-            @click.prevent="onClickAddr(add)"
-            icon="location-o"
-          />
-        </div>
-      </div>
-
-      </div>
-      <div class="mb-3">
+      <div class="mb-3 box2">
         <label class="form-label">イベント料金：</label>
         <validate-input
           rows="10"
@@ -217,7 +262,7 @@ export default defineComponent({
     // 時間選択
     const currentDate = ref(new Date('YYYY/MM/DD'))
     // 3択結果
-    const placeChecked = ref('2')
+    const placeChecked = ref('1')
     const onPlaceCheckedOn1 = () => {
       // console.log(PrefecturesContent)
     }
@@ -302,18 +347,17 @@ export default defineComponent({
             price: priceVal.value,
             community: communityVal.value
           }
-          console.log(newEvent)
-          // store.commit('createEvent', newEvent)
-          // router.push('/')
-          // store.dispatch('createEvent', newEvent).then(data => {
-          //   console.log(data)
-          //   createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
-          //   setTimeout(() => {
-          //     router.push(`/event/${data.data}`)
-          //   }, 2000)
-          // }).catch(e => {
-          //   console.log(e)
-          // })
+          console.log('newEvent', newEvent)
+          store.dispatch('createEvent', newEvent).then(data => {
+            console.log(data.data._id)
+            store.dispatch('fetchEvents')
+            createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
+            setTimeout(() => {
+              router.push(`/community/${data.data.community}/${data.data._id}`)
+            }, 2000)
+          }).catch(e => {
+            console.log(e)
+          })
         }
       }
     }
@@ -362,5 +406,20 @@ export default defineComponent({
 }
 .img-icon {
   height: 20px;
+}
+.box2 {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
+}
+h2 {
+  padding: 0.5em;/*文字周りの余白*/
+  color: #494949;/*文字色*/
+  background: #fffaf4;/*背景色*/
+  border-left: solid 5px #ffaf58;/*左線（実線 太さ 色）*/
 }
 </style>

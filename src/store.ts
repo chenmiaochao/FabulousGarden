@@ -118,6 +118,9 @@ const store = createStore<GlobalDataProps>({
       // console.log([rawdata.data])
       state.events = [rawdata.data]
     },
+    createEvent (state, rawdata) {
+      state.events = rawdata.data
+    },
     fetchPosts (state, rawdata) {
       state.posts = rawdata.data
       // console.log(state.posts)
@@ -176,6 +179,9 @@ const store = createStore<GlobalDataProps>({
     },
     fetchEvent ({ commit }, eid) {
       return getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
+    },
+    createEvent ({ commit }, payload) {
+      return postAndCommit('/event/new', 'createEvent', commit, payload)
     },
     fetchPosts ({ commit }) {
       return getAndCommit('/post', 'fetchPosts', commit)

@@ -1,9 +1,15 @@
 <template>
-  <div class="row overflow-auto">
+  <div class="row overflow-scroll overflow-scroll">
     <div v-for="event in event" :key="event.id" class="col">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
-          <img  :src="event.avatar" :alt="event.title" class="rounded-circle border border-light w-25 my-3" >
+        <van-image
+          width="6rem"
+          height="6rem"
+          round
+          fit="scale-down"
+          :src="event.avatar"
+        />
           <h5 class="card-title">{{event.title}}</h5>
           <p class="card-text text-left">{{event.description}}</p>
           <router-link :to="`/community/${event.community}/${event._id}`" class="btn btn-outline-primary">进入event</router-link>
