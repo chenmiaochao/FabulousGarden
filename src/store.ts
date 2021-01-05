@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { createStore, Commit } from 'vuex'
+import PrefecturesContent from '../content'
 // import { testData, testEvent, testPosts } from './testData'
 export interface ResponseType<P = {}> {
   code: number;
@@ -40,7 +41,12 @@ export interface CommunityProps{
 }
 export interface EventProps{
   _id?: string;
-  title: string;
+  author: string;
+  eventName: string;
+  date: string | null | object;
+  place?: string | object | null;
+  price?: number;
+  description: string;
   avatar?: string;
   community: string;
 }
@@ -52,16 +58,25 @@ export interface GlobalDataProps {
   events: EventProps[];
   posts: PostProps[];
   user: UserProps;
+  hotels: any;
+  markers: any;
 }
 export interface GlobalErrorProps {
   status: boolean;
   message?: string;
+}
+const getAndCommitWithParams = async (url: string, mutationName: string, commit: Commit, params: any) => {
+  // console.log(params)
+  const { data } = await axios.get(url, { params })
+  commit(mutationName, data)
+  return data
 }
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url)
   commit(mutationName, data)
 }
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  console.log(payload)
   const { data } = await axios.post(url, payload)
   commit(mutationName, data)
   return data
@@ -74,7 +89,9 @@ const store = createStore<GlobalDataProps>({
     communities: [],
     events: [],
     posts: [],
-    user: { isLogin: false }
+    user: { isLogin: false },
+    hotels: [],
+    markers: []
   },
   mutations: {
     createPost (state, newPost) {
@@ -130,6 +147,15 @@ const store = createStore<GlobalDataProps>({
       state.token = ''
       localStorage.removeItem('token')
       delete axios.defaults.headers.common.Authorization
+    },
+    fetchHotel (state, rawdata) {
+      state.hotels = rawdata
+      // console.log(rawdata)
+    },
+    fecthMakerData (state, rawdata) {
+      state.markers = rawdata.data
+      console.log(rawdata.data)
+      return rawdata.data
     }
   },
   actions: {
@@ -170,6 +196,30 @@ const store = createStore<GlobalDataProps>({
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
       })
+    },
+    fetchHotel ({ commit }, payload) {
+      // console.log(payload)
+      const params = {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        s_area: payload[2].code
+      }
+      return getAndCommitWithParams('/event/jalan', 'fetchHotel', commit, params)
+    },
+    fecthMakerData ({ commit }, payload) {
+      console.log(payload)
+      return postAndCommit('/event/yahooGeo', 'fecthMakerData', commit, payload)
+    },
+    fetchHotelAndMarkers ({ dispatch }, payload) {
+      console.log('payload', payload)
+      // const params = {
+      //   // eslint-disable-next-line @typescript-eslint/camelcase
+      //   s_area: payload[2].code
+      // }
+      return dispatch('fetchHotel', payload).then((rawdata) => {
+        // console.log(this.state.hotels)
+        console.log(rawdata)
+        return dispatch('fecthMakerData', rawdata)
+      })
     }
   },
   getters: {
@@ -202,6 +252,10 @@ const store = createStore<GlobalDataProps>({
       // console.log('state.posts by cid', state.posts)
       const array = state.posts.filter(p => p.community === cid)
       return array.filter(p => p.createdAtMonth === new Date().toLocaleString().split('/')[1])
+    },
+    getPerfList: (PrefecturesContent) => () => {
+      console.log(PrefecturesContent)
+      return PrefecturesContent
     }
   }
 })

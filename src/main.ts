@@ -5,6 +5,8 @@ import axios from 'axios'
 import App from './App.vue'
 import Vant from 'vant'
 import 'vant/lib/index.css'
+// import * as VueGoogleMaps from 'gmap-vue'
+// import apiKey from './apiKey.json'
 // axios.get('/api/blog/list').then((res) => {
 //   console.log(res)
 // })
@@ -29,6 +31,12 @@ axios.interceptors.response.use(config => {
   return Promise.reject(error)
 })
 const app = createApp(App)
+// app.use(VueGoogleMaps, {
+//   load: {
+//     key: apiKey.googleApi,
+//     libraries: 'places',
+//     installComponents: true
+// })
 app.use(router)
 app.use(store)
 app.use(Vant)

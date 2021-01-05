@@ -1,5 +1,5 @@
 <template>
-  <div class="home-page col-8">
+  <div class="home-page">
     <section class="py-5 text-center container">
       <!-- <event-list :list2="list2"></event-list> -->
       <div class="row py-lg-5">
@@ -7,7 +7,8 @@
           <img src="../assets/4.png" alt="callout" class="w-50"/>
           <h2 class="font-weight-light">心のままにシェアしよう</h2>
           <p>
-            <router-link to="/cretaeC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+            <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+            <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
             <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
           </p>
         </div>

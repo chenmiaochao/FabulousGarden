@@ -6,6 +6,7 @@ import CommunityDetail from './views/CommunityDetail.vue'
 import EventDetail from './views/EventDetail.vue'
 import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
+import CreateEvent from './views/CreateEvent.vue'
 import axios from 'axios'
 import store from './store'
 const routerHistory = createWebHistory()
@@ -24,10 +25,16 @@ const router = createRouter({
       meta: { redirectAlreadyLogin: true }
     },
     {
-      path: '/cretaeC',
+      path: '/createC',
       name: 'createCommunity',
       component: CreateCommunity,
-      meta: { requiredLogin: false }
+      meta: { requiredLogin: true }
+    },
+    {
+      path: '/createE',
+      name: 'createEvent',
+      component: CreateEvent,
+      meta: { requiredLogin: true }
     },
     {
       path: '/community/:communityId',

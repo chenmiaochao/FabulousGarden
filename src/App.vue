@@ -4,8 +4,12 @@
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
     <div class="row">
-      <community-list :list="list" :type="'round'" class="col-4"></community-list>
-      <router-view></router-view>
+      <div class="col-2">
+        <community-list :list="list" :type="'round'"></community-list>
+      </div>
+      <div class="col-10">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +24,8 @@ import Loader from './components/Loader.vue'
 import CommunityList from './components/CommunityList.vue'
 import { GlobalDataProps } from './store'
 import createMessage from './hooks/createMessage'
+/// <reference types="googlemaps" />
+/* eslint-disable no-undef */
 export default defineComponent({
   name: 'App',
   components: {

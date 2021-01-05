@@ -71,6 +71,7 @@ export default defineComponent({
           // router.push('/')
           store.dispatch('createCommunity', newCommunity).then(data => {
             console.log(data)
+            store.dispatch('fetchCommunities')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
             setTimeout(() => {
               router.push(`/community/${data.data}`)

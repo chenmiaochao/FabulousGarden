@@ -61,6 +61,7 @@ export default defineComponent({
 .round-com-list{
   background: aquamarine;
   width: 20%;
-  /* float: left; */
+  /* float: left;
+  top:-100vh; */
 }
 </style>
