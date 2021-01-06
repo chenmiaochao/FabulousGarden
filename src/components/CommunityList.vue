@@ -12,7 +12,7 @@
         />
           <!-- <img  :src="community.avatar" :alt="community.ticommunityNametle" class="rounded-circle border border-light w-25 my-3" > -->
           <h5 class="card-title">{{community.communityName}}</h5>
-          <p class="card-text text-left">{{community.description}}</p>
+          <p class="card-text text-left van-multi-ellipsis--l3">{{community.description}}</p>
           <!-- <router-link :to="/community/+{ name: 'CommunityDetail', params: { id: community.id } }" class="btn btn-outline-primary">进入coummunity</router-link> -->
           <router-link :to="`/community/${community._id}`" class="btn btn-outline-primary w-100">coummunityへ</router-link>
         </div>

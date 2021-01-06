@@ -50,6 +50,11 @@ export interface EventProps{
   avatar?: string;
   community: string;
 }
+export interface MakerProps{
+  position?: object;
+  title?: string;
+  draggable: boolean;
+}
 export interface GlobalDataProps {
   error: GlobalErrorProps;
   token: string;
@@ -59,7 +64,7 @@ export interface GlobalDataProps {
   posts: PostProps[];
   user: UserProps;
   hotels: any;
-  markers: any;
+  markers: MakerProps[];
 }
 export interface GlobalErrorProps {
   status: boolean;
@@ -91,7 +96,11 @@ const store = createStore<GlobalDataProps>({
     posts: [],
     user: { isLogin: false },
     hotels: [],
-    markers: []
+    markers: [{
+      position: { lat: 35.1, lng: 135.1 },
+      title: 'position1',
+      draggable: false
+    }]
   },
   mutations: {
     createPost (state, newPost) {

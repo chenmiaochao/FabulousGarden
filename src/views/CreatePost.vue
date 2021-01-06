@@ -3,14 +3,15 @@
   <div class="create-post-page">
     <!-- <h4>{{isEditMode ? '编辑文章' : '新建文章'}}</h4> -->
     <h4>POST</h4>
-    <uploader
+    <div class="box2">
+      <h2><van-icon name="thumb-circle-o" />クリックし画像をぶち込んで！</h2>
+      <uploader
       :action="'/post/upload'"
       :beforeUpload="uploadCheck"
       @file-uploaded="onFileUploaded"
       :imgRules="imgRules"
       class="d-flex align-items-center justify-content-center bg-list text-secondary w-100 my-4"
     >
-      <h2><van-icon name="thumb-circle-o" />クリックし画像をぶち込んで！</h2>
       <template #loading>
         <div class="spinner-border text-secondary" role="statys">
           <span class="sr-only">ガンバておりますぴえん🥺.🥺.🥺.🥺</span>
@@ -21,88 +22,95 @@
         <img :src="dataProps.uploadedData.data.imgUrl" width="500" />
       </template>
     </uploader>
+    </div>
 
-    <van-checkbox-group v-model="checked">
-      <h2><van-icon name="thumb-circle-o" />クリックし、コミュニティを選択しよう</h2>
-      <van-cell-group :title="''">
-        <van-cell
-          v-for="(item) in communitiesWithEvents"
-          clickable
-          :key="item"
-          @click="toggle(item._id)"
-          :class="isComClicked == item._id ? 'clicked':''"
-        >
-        <template #icon>
-          <van-image :src="item.avatar"
-            width="5rem"
-            height="5rem"
-            fit="contain"
-            round
-          />
-        </template>
-        <template #title>
-          {{item.title}}
-        </template>
-        <template #label>
-          {{item.description}}
-        </template>
-        </van-cell>
-      </van-cell-group>
-    </van-checkbox-group>
-        <!-- <pre>{{communitiesWithEvents.find(c => c._id === isComClicked).events}}</pre> -->
-    <van-checkbox-group v-model="checked" v-if="isComClicked">
-      <h2><van-icon name="thumb-circle-o" />クリックし、イベントを選択しよう</h2>
-      <van-cell-group :title="''">
-        <van-cell
-          v-for="(item) in communitiesWithEvents.find(c => c._id === isComClicked).events"
-          clickable
-          :key="item"
-          :title="item.title"
-          @click="toggleEvent(item._id)"
-          :class="isEventClicked == item._id ? 'clicked-event':''"
-        >
-        <template #icon>
-          <van-image :src="item.avatar"
-            width="5rem"
-            height="5rem"
-            fit="contain"
-            round
-          />
-        </template>
-        <template #title>
-          {{item.title}}
-        </template>
-        </van-cell>
-      </van-cell-group>
-    </van-checkbox-group>
+    <div class="box2">
+      <van-checkbox-group v-model="checked">
+          <h2><van-icon name="thumb-circle-o" />クリックし、コミュニティを選択しよう</h2>
+          <van-cell-group :title="''">
+            <van-cell
+              v-for="(item) in communitiesWithEvents"
+              clickable
+              :key="item"
+              @click="toggle(item._id)"
+              :class="isComClicked == item._id ? 'clicked':''"
+            >
+            <template #icon>
+              <van-image :src="item.avatar"
+                width="5rem"
+                height="5rem"
+                fit="contain"
+                round
+              />
+            </template>
+            <template #title>
+              {{item.title}}
+            </template>
+            <template #label>
+              {{item.description}}
+            </template>
+            </van-cell>
+          </van-cell-group>
+      </van-checkbox-group>
+    </div>
+    <div :class="{ box2 : isComClicked }">
+      <van-checkbox-group v-model="checked" v-if="isComClicked">
 
-  <button @click="selectComAndEve">押して</button>
-    <validate-form @form-submit="onFormSubmit">
-      <div class="mb-3">
-        <label class="form-label">文章标题：</label>
-        <validate-input
-          :rules="titleRules" v-model="titleVal"
-          placeholder="请输入文章标题"
-          type="text"
-        />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">文章详情：</label>
-        <validate-input
-          rows="10"
-          tag="textarea"
-          placeholder="请输入文章详情"
-          :rules="contentRules"
-          v-model="contentVal"
-        />
-      </div>
-      <template #submit>
-        <!-- <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
-</button> -->
-        <button class="btn btn-primary btn-large">发表文章
-</button>
-      </template>
-    </validate-form>
+        <h2><van-icon name="thumb-circle-o" />クリックし、イベントを選択しよう</h2>
+        <van-cell-group :title="''">
+          <van-cell
+            v-for="(item) in communitiesWithEvents.find(c => c._id === isComClicked).events"
+            clickable
+            :key="item"
+            :title="item.title"
+            @click="toggleEvent(item._id)"
+            :class="isEventClicked == item._id ? 'clicked-event':''"
+          >
+          <template #icon>
+            <van-image :src="item.avatar"
+              width="5rem"
+              height="5rem"
+              fit="contain"
+              round
+            />
+          </template>
+          <template #title>
+            {{item.title}}
+          </template>
+          </van-cell>
+        </van-cell-group>
+      </van-checkbox-group>
+    </div>
+
+    <div class="box2">
+      <validate-form @form-submit="onFormSubmit">
+        <div class="mb-3">
+          <label class="form-label">文章标题：</label>
+          <validate-input
+            :rules="titleRules" v-model="titleVal"
+            placeholder="请输入文章标题"
+            type="text"
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">文章详情：</label>
+          <validate-input
+            rows="10"
+            tag="textarea"
+            placeholder="请输入文章详情"
+            :rules="contentRules"
+            v-model="contentVal"
+          />
+        </div>
+        <template #submit>
+          <!-- <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
+  </button> -->
+          <button class="btn btn-primary btn-large">发表文章
+  </button>
+        </template>
+      </validate-form>
+    </div>
+
   </div>
 </template>
 
@@ -296,5 +304,14 @@ export default defineComponent({
 .clicked-event{
   border: 4mm ridge rgba(50, 220, 183, 0.6);
   background-color: aliceblue;
+}
+.box2 {
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    font-weight: bold;
+    color: #6091d3;/*文字色*/
+    background: #FFF;
+    border: solid 3px #6091d3;/*線*/
+    border-radius: 10px;/*角の丸み*/
 }
 </style>

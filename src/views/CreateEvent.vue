@@ -347,9 +347,7 @@ export default defineComponent({
             price: priceVal.value,
             community: communityVal.value
           }
-          console.log('newEvent', newEvent)
           store.dispatch('createEvent', newEvent).then(data => {
-            console.log(data.data._id)
             store.dispatch('fetchEvents')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
             setTimeout(() => {

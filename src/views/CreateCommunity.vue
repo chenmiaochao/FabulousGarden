@@ -50,7 +50,6 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const store = useStore<GlobalDataProps>()
-    // const inputRef = ref<any>()
     const communityNameVal = ref('ビッチzoon')
     const communityNameRules: RulesProp = [
       { type: 'required', message: 'コミュニティ名を入力してください' }
@@ -67,10 +66,7 @@ export default defineComponent({
             description: contentVal.value,
             author: store.state.user.name
           }
-          // store.commit('createCommunity', newCommunity)
-          // router.push('/')
           store.dispatch('createCommunity', newCommunity).then(data => {
-            console.log('data._id', data.data._id)
             store.dispatch('fetchCommunities')
             store.dispatch('fetchEvents')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')

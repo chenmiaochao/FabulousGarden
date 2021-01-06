@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-      <van-sticky :offset-top="'95vh'" class="">
-        <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button>
-      </van-sticky>
+    <van-sticky :offset-top="'95vh'" class="">
+      <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button>
+    </van-sticky>
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
@@ -18,7 +18,9 @@
       <van-popup
         v-model:show="show"
         round
-        :style="{ height: '30%' }"
+        :safe-area-inset-bottom="true"
+        :style="{ height: '14%' }"
+        @click.prevent="click"
       >
         <p>
           <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
@@ -72,7 +74,11 @@ export default defineComponent({
     const showPopup = () => {
       show.value = true
     }
+    const click = (event: Event) => {
+      show.value = false
+    }
     return {
+      click,
       currentUser,
       isLoading,
       list: communityData,
