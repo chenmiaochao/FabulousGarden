@@ -70,12 +70,12 @@ export default defineComponent({
           // store.commit('createCommunity', newCommunity)
           // router.push('/')
           store.dispatch('createCommunity', newCommunity).then(data => {
-            console.log(data)
+            console.log('data._id', data.data._id)
             store.dispatch('fetchCommunities')
             store.dispatch('fetchEvents')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
             setTimeout(() => {
-              router.push(`/community/${data.data}`)
+              router.push(`/community/${data.data._id}`)
             }, 2000)
           }).catch(e => {
             console.log(e)

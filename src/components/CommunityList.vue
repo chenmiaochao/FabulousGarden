@@ -19,8 +19,7 @@
       </div>
     </div>
   </div>
-  <div v-else-if="type === 'round'" class="round-com-list">
-    <h2>round</h2>
+  <div v-else-if="type === 'round'" class="">
       <div v-for="community in list" :key="community._id" class="">
         <router-link :to="`/community/${community._id}`">
         <van-image

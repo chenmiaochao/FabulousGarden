@@ -16,7 +16,7 @@
       <community-list :list="list" :type="'default'"></community-list>
     </section>
     <post-list :posts="posts"></post-list>
-    <h4 class="font-weight-bold text-center">发现精彩</h4>
+    <h4 class="font-weight-bold text-center">fabulousを発見！</h4>
 
   </div>
 </template>

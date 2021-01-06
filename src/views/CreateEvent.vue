@@ -126,6 +126,7 @@
           <van-divider
             :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
           />
+          <!-- <pre>{{console.log(markers)}}</pre> -->
           <GoogleMap
               :apiKey="apiKey"
               libraries="geometry,drawing,places"
@@ -283,7 +284,6 @@ export default defineComponent({
       store.dispatch('fetchHotelAndMarkers', data).then(res => {
         // console.log(res)
         markers.value = computed(() => store.state.markers)
-        console.log('markers.value', markers.value)
       })
     }
 

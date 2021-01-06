@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+      <van-sticky :offset-top="'95vh'" class="">
+        <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button>
+      </van-sticky>
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
@@ -11,7 +14,19 @@
         <router-view></router-view>
       </div>
     </div>
-  </div>
+
+      <van-popup
+        v-model:show="show"
+        round
+        :style="{ height: '30%' }"
+      >
+        <p>
+          <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+          <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
+          <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
+        </p>
+      </van-popup>
+    </div>
 </template>
 
 <script lang="ts">
@@ -53,11 +68,16 @@ export default defineComponent({
         createMessage(message, 'error')
       }
     })
-
+    const show = ref(false)
+    const showPopup = () => {
+      show.value = true
+    }
     return {
       currentUser,
       isLoading,
-      list: communityData
+      list: communityData,
+      show,
+      showPopup
     }
   }
 })
@@ -71,5 +91,11 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 5px;
+}
+.box3{
+  width: 15rem;
+  height: 15rem;
+  border: solid 3px #6091d3;/*線*/
+  border-radius: 50% 50% 0 50%;
 }
 </style>
