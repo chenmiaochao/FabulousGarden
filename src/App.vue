@@ -3,13 +3,10 @@
     <van-sticky :offset-top="'95vh'" class="">
       <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button>
     </van-sticky>
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
     <div class="row">
-      <div class="col-2">
-        <community-list :list="list" :type="'round'"></community-list>
-      </div>
+      <van-cell is-link @click="showPopupCommunityList">community-list</van-cell>
       <div class="col-10">
         <router-view></router-view>
       </div>
@@ -19,7 +16,7 @@
         v-model:show="show"
         round
         :safe-area-inset-bottom="true"
-        :style="{ height: '14%' }"
+        :style="{ height: 'auto' }"
         @click.prevent="click"
       >
         <p>
@@ -27,6 +24,17 @@
           <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
           <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
         </p>
+      </van-popup>
+      <van-popup
+        v-model:show="showCommunity"
+        round
+        position="left"
+        :safe-area-inset-bottom="true"
+        :style="{ height: 'auto' }"
+        @click.prevent="click"
+      >
+        <h4>コミュニティ</h4>
+        <community-list :list="list" :type="'round'"></community-list>
       </van-popup>
     </div>
 </template>
@@ -74,8 +82,17 @@ export default defineComponent({
     const showPopup = () => {
       show.value = true
     }
+    const showCommunity = ref(false)
+    const showPopupCommunityList = () => {
+      showCommunity.value = true
+    }
     const click = (event: Event) => {
-      show.value = false
+      if (show.value) {
+        show.value = !show.value
+      }
+      if (showCommunity.value) {
+        showCommunity.value = !showCommunity.value
+      }
     }
     return {
       click,
@@ -83,7 +100,9 @@ export default defineComponent({
       isLoading,
       list: communityData,
       show,
-      showPopup
+      showPopup,
+      showCommunity,
+      showPopupCommunityList
     }
   }
 })
@@ -96,7 +115,7 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
 .box3{
   width: 15rem;

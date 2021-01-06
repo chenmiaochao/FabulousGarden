@@ -1,7 +1,6 @@
 <template>
   <div class="home-page">
     <section class="py-5 text-center container">
-      <!-- <event-list :list2="list2"></event-list> -->
       <div class="row py-lg-5">
         <div class="col-lg-6 com-md-8 mx-auto">
           <img src="../assets/4.png" alt="callout" class="w-50"/>
