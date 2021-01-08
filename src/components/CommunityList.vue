@@ -26,7 +26,7 @@
           :src="community.avatar"
           width="5rem"
           height="5rem"
-          fit="contain"
+          fit="cover"
           round
         />
         <p class="text-lowercase font-weight-light text-muted">{{community.communityName}}</p>

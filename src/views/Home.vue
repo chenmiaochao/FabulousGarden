@@ -3,7 +3,12 @@
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 com-md-8 mx-auto">
-          <img src="../assets/4.png" alt="callout" class="w-50"/>
+          <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+            <van-swipe-item><img src="../assets/1.png" alt="callout" class="w-50"/></van-swipe-item>
+            <van-swipe-item><img src="../assets/2.png" alt="callout" class="w-50"/></van-swipe-item>
+            <van-swipe-item><img src="../assets/3.png" alt="callout" class="w-50"/></van-swipe-item>
+            <van-swipe-item><img src="../assets/4.png" alt="callout" class="w-50"/></van-swipe-item>
+          </van-swipe>
           <h2 class="font-weight-light">心のままにシェアしよう</h2>
           <p>
             <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
@@ -43,7 +48,13 @@ export default defineComponent({
     const posts = computed(() => store.state.posts)
     return {
       list: communityData,
-      posts
+      posts,
+      imgList: [
+        '../assets/4.png',
+        '../assets/3.png',
+        '../assets/2.png',
+        '../assets/1.png'
+      ]
     }
   }
 })
@@ -53,4 +64,10 @@ export default defineComponent({
 .home-page{
   margin-left: 18%;
 }
+.my-swipe .van-swipe-item {
+    color: #fff;
+    font-size: 20px;
+    line-height: 150px;
+    text-align: center;
+  }
 </style>
