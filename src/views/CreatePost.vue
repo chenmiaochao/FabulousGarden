@@ -238,11 +238,11 @@ export default defineComponent({
           createdAtMonth: new Date().toLocaleString().split('/')[1]
         }
         store.dispatch('createPost', newPost).then(data => {
-          // console.log(data)
+          console.log(data)
           store.dispatch('fetchPosts')
           createMessage('成功２秒後 topへ飛ばし', 'success')
           setTimeout(() => {
-            router.push(`/community/${data.data._id}`)
+            router.push(`/community/${data.data.community}/${data.data.event}/${data.data._id}`)
           }, 2000)
         }).catch(e => {
           console.log(e)

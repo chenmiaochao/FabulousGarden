@@ -9,6 +9,7 @@
           fit="cover"
           :src="community.avatar"
           :alt="community.ticommunityNametle"
+          @click.prevent="showPostSwiper(community._id)"
         />
           <!-- <img  :src="community.avatar" :alt="community.ticommunityNametle" class="rounded-circle border border-light w-25 my-3" > -->
           <h5 class="card-title">{{community.communityName}}</h5>
@@ -34,6 +35,18 @@
         <van-divider dashed></van-divider>
       </div>
   </div>
+  <van-popup v-model:show="show" v-model:cid="cid">
+    <van-swipe lazy-render>
+      <van-swipe-item v-for="postItem in post.value" :key="postItem">
+        <van-image
+          :src="postItem.image"
+          width="100%"
+          height="auto"
+          fit="cover"
+        />
+      </van-swipe-item>
+    </van-swipe>
+  </van-popup>
 </template>
 
 <script lang="ts">
@@ -58,6 +71,22 @@ export default defineComponent({
     type: {
       type: String as PropType<communityListType>,
       default: 'default'
+    }
+  },
+  setup () {
+    const show = ref(false)
+    const cid = ref('')
+    const post = ref()
+    const showPostSwiper = (id: any) => {
+      cid.value = id
+      post.value = computed(() => store.getters.getPostsByCid(cid.value))
+      show.value = true
+    }
+    return {
+      show,
+      cid,
+      showPostSwiper,
+      post
     }
   }
 })
