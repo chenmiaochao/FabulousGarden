@@ -267,7 +267,13 @@ export default defineComponent({
           createdAt: new Date().toLocaleString(),
           createdAtMonth: new Date().toLocaleString().split('/')[1]
         }
-        store.dispatch('createPost', newPost).then(data => {
+        const actionName = isEditMode ? 'updatePost' : 'createPost'
+        const sendData = isEditMode ? {
+          id: route.query.id,
+          payload: newPost
+        } : newPost
+        store.dispatch(actionName, sendData).then(data => {
+        // store.dispatch('createPost', newPost).then(data => {
           console.log(data)
           store.dispatch('fetchPosts')
           createMessage('成功２秒後 topへ飛ばし', 'success')

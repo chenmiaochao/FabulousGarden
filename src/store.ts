@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { createStore, Commit } from 'vuex'
 import PrefecturesContent from '../content'
 // import { testData, testEvent, testPosts } from './testData'
@@ -87,6 +87,11 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
   commit(mutationName, data)
   return data
 }
+const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+  const { data } = await axios(url, config)
+  commit(mutationName, data)
+  return data
+}
 const store = createStore<GlobalDataProps>({
   state: {
     error: { status: false },
@@ -107,8 +112,38 @@ const store = createStore<GlobalDataProps>({
     createPost (state, newPost) {
       state.posts.push(newPost)
     },
+    updatePost (state, { data }) {
+      state.posts = state.posts.map(post => {
+        if (post._id === data._id) {
+          return data
+        } else {
+          return post
+        }
+      })
+    },
+    createEvent (state, rawdata) {
+      state.events = rawdata.data
+    },
+    updateEvent (state, { data }) {
+      state.events = state.events.map(event => {
+        if (event._id === data._id) {
+          return data
+        } else {
+          return event
+        }
+      })
+    },
     createCommunity (state, newCommunity) {
       state.communities.push(newCommunity)
+    },
+    updateCommunity (state, { data }) {
+      state.communities = state.communities.map(community => {
+        if (community._id === data._id) {
+          return data
+        } else {
+          return community
+        }
+      })
     },
     fetchCommunities (state, rawdata) {
       state.communities = rawdata.data
@@ -127,9 +162,6 @@ const store = createStore<GlobalDataProps>({
     fetchEvent (state, rawdata) {
       // console.log([rawdata.data])
       state.events = [rawdata.data]
-    },
-    createEvent (state, rawdata) {
-      state.events = rawdata.data
     },
     fetchPosts (state, rawdata) {
       state.posts = rawdata.data
@@ -181,6 +213,12 @@ const store = createStore<GlobalDataProps>({
     createCommunity ({ commit }, payload) {
       return postAndCommit('/community/new', 'createCommunity', commit, payload)
     },
+    updateCommunity ({ commit }, { id, payload }) {
+      return asyncAndCommit(`/community/${id}`, 'updateCommunity', commit, {
+        method: 'patch',
+        data: payload
+      })
+    },
     fetchCommunitiesWithEvents ({ commit }) {
       return getAndCommit('/community/all', 'fetchCommunitiesWithEvents', commit)
     },
@@ -193,6 +231,12 @@ const store = createStore<GlobalDataProps>({
     createEvent ({ commit }, payload) {
       return postAndCommit('/event/new', 'createEvent', commit, payload)
     },
+    updateEvent ({ commit }, { id, payload }) {
+      return asyncAndCommit(`/event/${id}`, 'updateEvent', commit, {
+        method: 'patch',
+        data: payload
+      })
+    },
     fetchPosts ({ commit }) {
       return getAndCommit('/post', 'fetchPosts', commit)
     },
@@ -201,6 +245,12 @@ const store = createStore<GlobalDataProps>({
     },
     createPost ({ commit }, payload) {
       return postAndCommit('/post/new', 'createPost', commit, payload)
+    },
+    updatePost ({ commit }, { id, payload }) {
+      return asyncAndCommit(`/post/${id}`, 'updatePost', commit, {
+        method: 'patch',
+        data: payload
+      })
     },
     fetchCurrentUser ({ commit }) {
       return getAndCommit('/user/current', 'fetchCurrentUser', commit)

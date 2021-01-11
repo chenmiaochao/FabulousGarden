@@ -1,7 +1,6 @@
 <template>
   <div class="create-post-page">
-    <h2>cretae Community</h2>
-    <!-- <h4>{{isEditMode ? 'edit Community' : 'cretae Community'}}</h4> -->
+    <h4>{{isEditMode ? 'edit Community' : 'cretae Community'}}</h4>
     <div v-if="isEditMode">
     <div class="box2">
       <h2><van-icon name="thumb-circle-o" />クリックし画像をぶち込んで！</h2>
@@ -24,7 +23,6 @@
     </uploader>dataProps
     </div>
     </div>
-
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">コミュニティ名：</label>
@@ -45,12 +43,11 @@
         />
       </div>
       <template #submit>
-        <!-- <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
-</button> -->
-        <button class="btn btn-primary btn-large">コミュニティ創生
+        <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
 </button>
       </template>
     </validate-form>
+    <h2>hellooooooo</h2>
   </div>
 </template>
 
@@ -94,6 +91,7 @@ export default defineComponent({
           const currentCommunity = rawData.data
           if (currentCommunity.avatar) {
             uploadedData.value = { data: currentCommunity.avatar }
+            imgVal.value = currentCommunity.avatar
           }
           communityNameVal.value = currentCommunity.communityName
           descriptionVal.value = currentCommunity.description || ''
@@ -125,11 +123,17 @@ export default defineComponent({
       if (result) {
         if (store.state.user._id) {
           const newCommunity: CommunityProps = {
+            avatar: imgVal.value,
             communityName: communityNameVal.value,
             description: descriptionVal.value,
             author: store.state.user._id
           }
-          store.dispatch('createCommunity', newCommunity).then(data => {
+          const actionName = isEditMode ? 'updateCommunity' : 'createCommunity'
+          const sendData = isEditMode ? {
+            id: route.query.id,
+            payload: newCommunity
+          } : newCommunity
+          store.dispatch(actionName, sendData).then(data => {
             store.dispatch('fetchCommunities')
             store.dispatch('fetchEvents')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')

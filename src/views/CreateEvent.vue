@@ -231,6 +231,7 @@
       </template>
     </validate-form>
   </div>
+  <h1>helloooooo</h1>
 </template>
 
 <script lang="ts">
@@ -282,6 +283,8 @@ export default defineComponent({
     const communityVal = ref('')
     // 時間選択
     const currentDate = ref(new Date('YYYY/MM/DD'))
+    // 場所入力3択結果
+    const placeChecked = ref('3')
     // コミュニティクリック
     const isComClicked = ref(false)
     const toggle = (_id: any) => {
@@ -300,6 +303,7 @@ export default defineComponent({
           const currentEvent = rawData.data
           if (currentEvent.avatar) {
             uploadedData.value = { data: currentEvent.avatar }
+            imgVal.value = currentEvent.avatar
           }
           eventNameVal.value = currentEvent.eventName
           contentVal.value = currentEvent.description
@@ -335,9 +339,6 @@ export default defineComponent({
     }
     store.dispatch('fetchCommunities')
     const communities = computed(() => store.state.communities)
-
-    // 3択結果
-    const placeChecked = ref('1')
 
     // 選択の戻り値
     const hotels = ref()
@@ -395,22 +396,12 @@ export default defineComponent({
     })
     const checked = ref([])
     const checkboxRefs = ref([])
-    // const isComClicked = ref(false)
-    // const communityVal = ref('')
-    // clickし、communityId取得,選択されたclassを追加
-    // const toggle = (_id: any) => {
-    //   if (isComClicked.value) {
-    //     isComClicked.value = false
-    //     return
-    //   }
-    //   isComClicked.value = _id
-    //   communityVal.value = _id
-    // }
 
     const onFormSubmit = (result: boolean) => {
       if (result) {
         if (store.state.user._id) {
           const newEvent: EventProps = {
+            avatar: imgVal.value,
             eventName: eventNameVal.value,
             description: contentVal.value,
             author: store.state.user._id,
@@ -419,7 +410,13 @@ export default defineComponent({
             price: priceVal.value,
             community: communityVal.value
           }
-          store.dispatch('createEvent', newEvent).then(data => {
+          const actionName = isEditMode ? 'updateEvent' : 'createEvent'
+          const sendData = isEditMode ? {
+            id: route.query.id,
+            payload: newEvent
+          } : newEvent
+          store.dispatch(actionName, sendData).then(data => {
+          // store.dispatch('createEvent', newEvent).then(data => {
             store.dispatch('fetchEvents')
             createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
             setTimeout(() => {

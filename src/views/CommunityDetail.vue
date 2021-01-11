@@ -1,13 +1,11 @@
 <template>
   <div class="column-detail-page w-75 mx-auto">
-    <h1>CommunityDetial</h1>
-
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="community">
+      <h2>{{community.communityName}}</h2>
       <div class="col-3 text-center">
-        <img :src="community.avatar && community.avatar.fitUrl" :alt="community.title" class="rounded-circle border w-100">
+        <img :src="community.avatar" :alt="community.communityName" class="border w-100">
       </div>
       <div class="col-9">
-        <h4>{{community.title}}</h4>
         <p class="text-muted">{{community.description}}</p>
       </div>
     </div>
