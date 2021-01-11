@@ -3,6 +3,28 @@
   <div class="create-post-page">
     <h1>cretae Event</h1>
     <!-- <h4>{{isEditMode ? 'edit Event' : 'cretae Event'}}</h4> -->
+    <div v-if="isEditMode">
+    <div class="box2">
+      <h2><van-icon name="thumb-circle-o" />クリックし画像をぶち込んで！</h2>
+    <uploader
+      :action="'/post/upload'"
+      :beforeUpload="uploadCheck"
+      :uploaded="uploadedData"
+      @file-uploaded="onFileUploaded"
+      class="d-flex align-items-center justify-content-center bg-list text-secondary w-100 my-4"
+    >
+      <template #loading>
+        <div class="spinner-border text-secondary" role="statys">
+          <span class="sr-only">ガンバておりますぴえん🥺.🥺.🥺.🥺</span>
+        </div>
+        <h2>ガンバておりますぴえん🥺.🥺.🥺.🥺</h2>
+      </template>
+      <template #uploaded="dataProps">
+        <img :src="dataProps.uploadedData.data" width="500" />
+      </template>
+    </uploader>dataProps
+    </div>
+    </div>
 
     <div class="box2">
       <van-checkbox-group v-model="checked">
@@ -113,7 +135,6 @@
           :style="{ color: '#00ff7f', borderColor: '#00ff7f', padding: '0 16px' }"
         />
         <div class="mt-3 mb-3" v-if="placeChecked =='1'">
-          <!-- <label class="form-label" @click="onPlaceCheckedOn1">イベント場所：選択</label> -->
           <van-area
             title="イベント場所：選択"
             :area-list="areaList"
@@ -216,7 +237,9 @@
 import { defineComponent, ref, computed, onMounted, watch, resolveComponent, unref, isRef, toRefs } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
-import { GlobalDataProps, EventProps } from '../store'
+import { GlobalDataProps, EventProps, ResponseType, ImageProps } from '../store'
+import Uploader from '../components/Uploader.vue'
+import { beforeUploadCheck } from '../helper'
 import createMessage from '../hooks/createMessage'
 import { GoogleMap } from 'google-map-ts-vue3'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
@@ -229,21 +252,17 @@ export default defineComponent({
   components: {
     ValidateInput,
     ValidateForm,
-    GoogleMap
+    GoogleMap,
+    Uploader
   },
   setup () {
     const titleVal = ref('')
     const router = useRouter()
     const route = useRoute()
+    const uploadedData = ref()
+    const imgVal = ref('')
+    const isEditMode = !!route.query.id
     const store = useStore<GlobalDataProps>()
-    // const inputRef = ref<any>()
-
-    onMounted(() => {
-      store.dispatch('fetchCommunities')
-    })
-    store.dispatch('fetchCommunities')
-    const communities = computed(() => store.state.communities)
-
     const eventNameVal = ref('ビッチevent')
     const eventNameRules: RulesProp = [
       { type: 'required', message: 'イベント名を入力してください' }
@@ -252,7 +271,7 @@ export default defineComponent({
     const contentRules: RulesProp = [
       { type: 'required', message: 'イベント詳細を入力してください' }
     ]
-    const placeVal = ref('長居公園')
+    const placeVal = ref('')
     const placeRules: RulesProp = [
       { type: 'required', message: 'イベント場所を入力または選択してください' }
     ]
@@ -260,13 +279,66 @@ export default defineComponent({
     const priceRules: RulesProp = [
       { type: 'required', message: 'イベント料金を入力してください' }
     ]
+    const communityVal = ref('')
     // 時間選択
     const currentDate = ref(new Date('YYYY/MM/DD'))
+    // コミュニティクリック
+    const isComClicked = ref(false)
+    const toggle = (_id: any) => {
+      if (isComClicked.value) {
+        isComClicked.value = false
+        return
+      }
+      isComClicked.value = _id
+      communityVal.value = _id
+    }
+    onMounted(() => {
+      store.dispatch('fetchCommunities')
+      if (isEditMode) {
+        console.log('route.query.id', route.query.id)
+        store.dispatch('fetchEvent', route.query.id).then((rawData: ResponseType<EventProps>) => {
+          const currentEvent = rawData.data
+          if (currentEvent.avatar) {
+            uploadedData.value = { data: currentEvent.avatar }
+          }
+          eventNameVal.value = currentEvent.eventName
+          contentVal.value = currentEvent.description
+          if (currentEvent.place) {
+            placeVal.value = currentEvent.place || ''
+          }
+          priceVal.value = currentEvent.price
+          // currentDate.value = currentEvent.date
+          communityVal.value = currentEvent.community
+          toggle(currentEvent.community)
+        })
+      }
+    })
+    // upload check & getImgUrl
+    const uploadCheck = (file: File) => {
+      const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 5 })
+      const { passed, error } = result
+      if (error === 'format') {
+        createMessage('格式不正确,只能是jpg和png', 'error')
+      }
+      if (error === 'size') {
+        createMessage('上传图片大小不能超过1Mb', 'error')
+      }
+      return passed
+    }
+    const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
+      // console.log(rawData)
+      if (rawData.data.imgUrl) {
+        imgVal.value = rawData.data.imgUrl
+      }
+      // console.log(imgVal.value)
+      createMessage('上传图片成功', 'success')
+    }
+    store.dispatch('fetchCommunities')
+    const communities = computed(() => store.state.communities)
+
     // 3択結果
     const placeChecked = ref('1')
-    const onPlaceCheckedOn1 = () => {
-      // console.log(PrefecturesContent)
-    }
+
     // 選択の戻り値
     const hotels = ref()
     const markers = ref()
@@ -323,25 +395,25 @@ export default defineComponent({
     })
     const checked = ref([])
     const checkboxRefs = ref([])
-    const isComClicked = ref(false)
-    const communityVal = ref('')
+    // const isComClicked = ref(false)
+    // const communityVal = ref('')
     // clickし、communityId取得,選択されたclassを追加
-    const toggle = (_id: any) => {
-      if (isComClicked.value) {
-        isComClicked.value = false
-        return
-      }
-      isComClicked.value = _id
-      communityVal.value = _id
-    }
+    // const toggle = (_id: any) => {
+    //   if (isComClicked.value) {
+    //     isComClicked.value = false
+    //     return
+    //   }
+    //   isComClicked.value = _id
+    //   communityVal.value = _id
+    // }
 
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        if (store.state.user.name) {
+        if (store.state.user._id) {
           const newEvent: EventProps = {
             eventName: eventNameVal.value,
             description: contentVal.value,
-            author: store.state.user.name,
+            author: store.state.user._id,
             date: currentDate.value,
             place: placeVal.value,
             price: priceVal.value,
@@ -378,7 +450,6 @@ export default defineComponent({
       checkboxRefs,
       toggle,
       isComClicked,
-      onPlaceCheckedOn1,
       activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
       inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
       areaList,
@@ -391,7 +462,11 @@ export default defineComponent({
       selectHotel,
       selectAddrs,
       onClickPlaceSearch,
-      apiKey: apiKey.googleApi
+      apiKey: apiKey.googleApi,
+      isEditMode,
+      uploadedData,
+      onFileUploaded,
+      uploadCheck
     }
   }
 })

@@ -2,7 +2,7 @@
   <div class="post-list">
     <article v-for="post in posts" :key="post._id" class="card mb-3 shadow-sm col card-img-top">
       <van-image
-        height="10rem"
+        height="auto"
         fit="cover"
         :src="post.image || 'https://img.yzcdn.cn/vant/cat.jpeg'"
       />

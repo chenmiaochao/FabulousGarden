@@ -1,27 +1,32 @@
 <template>
-  <div>
-    <h2>CommunityPostSwiper</h2>
-    <h3>{{cid}}</h3>
-  </div>
+<div>
+    <van-swipe lazy-render class="swipe">
+      <van-swipe-item v-for="postItem in posts" :key="postItem">
+        <van-image
+          :src="postItem.image"
+          width="auto"
+          height="auto"
+          fit="cover"
+        />
+      </van-swipe-item>
+    </van-swipe>
+</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'CommunityPostSwiper',
   props: {
-    communityId: {
-      type: String,
+    post: {
+      type: Array,
       require: true
     }
   },
   setup (props) {
-    onMounted(() => {
-      console.log('props.communityId', props.communityId)
-    })
-    console.log('props.communityId', props.communityId)
+    const posts = ref(props.post)
     return {
-      cid: props.communityId
+      posts
     }
   }
 })

@@ -44,7 +44,7 @@ export interface EventProps{
   author: string;
   eventName: string;
   date: string | null | object;
-  place?: string | object | null;
+  place?: string | null;
   price?: number;
   description: string;
   avatar?: string;
@@ -79,6 +79,7 @@ const getAndCommitWithParams = async (url: string, mutationName: string, commit:
 const getAndCommit = async (url: string, mutationName: string, commit: Commit) => {
   const { data } = await axios.get(url)
   commit(mutationName, data)
+  return data
 }
 const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
   console.log(payload)

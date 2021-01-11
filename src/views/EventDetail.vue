@@ -16,6 +16,16 @@
         <p class="text-muted">{{event.description}}</p>
       </div>
     </div>
+    <div v-if="showEditArea" class="btn-group mt-5">
+      <router-link
+        type="button"
+        class="btn btn-success"
+        :to="{name: 'createEvent', query: { id: event._id}}"
+      >
+        編集
+      </router-link>
+      <button type="button" class="btn btn-danger" @click.prevent="modalIsVisible = true">削除</button>
+    </div>
     <post-list :posts="posts"></post-list>
   </div>
 </template>
@@ -36,15 +46,25 @@ export default defineComponent({
     const currentId = route.params.eventId
     onMounted(() => {
       store.dispatch('fetchEvent', currentId)
-      // store.dispatch('fetchEvents')
       store.dispatch('fetchPosts')
+      // store.dispatch('fetchEvents')
     })
     const event = computed(() => store.getters.getEventById(currentId))
     const posts = computed(() => store.getters.getPostsByEid(currentId))
+    const showEditArea = computed(() => {
+      const { isLogin, _id } = store.state.user
+      if (event.value && event.value.author && isLogin) {
+        const eventAuthor = event.value.author
+        return eventAuthor === _id
+      } else {
+        return false
+      }
+    })
     return {
       posts,
       event,
-      route
+      route,
+      showEditArea
     }
   }
 })

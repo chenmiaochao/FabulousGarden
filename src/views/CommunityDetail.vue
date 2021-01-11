@@ -12,6 +12,16 @@
       </div>
     </div>
     <div v-else>{{community}}community</div>
+    <div v-if="showEditArea" class="btn-group mt-5">
+      <router-link
+        type="button"
+        class="btn btn-success"
+        :to="{name: 'createCommunity', query: { id: community._id}}"
+      >
+        編集
+      </router-link>
+      <button type="button" class="btn btn-danger" @click.prevent="modalIsVisible = true">削除</button>
+    </div>
     <event-list :event="event"></event-list>
     <van-divider
       :style="{ color: '#1989fa', borderColor: '#1989fa', padding: '0 16px' }"
@@ -49,7 +59,6 @@ export default defineComponent({
     // string => number
     const currentId: any = ref('')
     currentId.value = route.params.communityId
-    // console.log(currentId.value)
     onMounted(() => {
       store.dispatch('fetchEvents')
       store.dispatch('fetchPosts')
@@ -73,13 +82,22 @@ export default defineComponent({
     const event = computed(() => store.getters.getEventsByCid(currentId.value))
     const post = computed(() => store.getters.getPostsByCid(currentId.value))
     const postInThisMonth = computed(() => store.getters.getPostsByCidAndSelectFromThisMonth(currentId.value))
-
+    const showEditArea = computed(() => {
+      const { isLogin, _id } = store.state.user
+      if (community.value && community.value.author && isLogin) {
+        const communityAuthor = community.value.author
+        return communityAuthor === _id
+      } else {
+        return false
+      }
+    })
     return {
       community,
       event,
       route,
       post,
-      postInThisMonth
+      postInThisMonth,
+      showEditArea
     }
   }
 })

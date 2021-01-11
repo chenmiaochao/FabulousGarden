@@ -1,5 +1,5 @@
 <template>
-  <div class="column-detail-page w-75 mx-auto">
+  <article class="column-detail-page w-75 mx-auto">
     <h1>PostDetial</h1>
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="post">
       <div class="col-9">
@@ -25,7 +25,17 @@
       </div>
     </div>
   </div>
+  <div v-if="showEditArea" class="btn-group mt-5">
+    <router-link
+      type="button"
+      class="btn btn-success"
+      :to="{name: 'createPost', query: { id: post._id}}"
+    >
+      編集
+    </router-link>
+    <button type="button" class="btn btn-danger" @click.prevent="modalIsVisible = true">削除</button>
   </div>
+  </article>
 </template>
 
 <script lang="ts">
@@ -33,7 +43,7 @@ import axios from 'axios'
 import { defineComponent, computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import store, { GlobalDataProps } from '../store'
+import store, { GlobalDataProps, UserProps } from '../store'
 export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -41,6 +51,7 @@ export default defineComponent({
     const currentId: any = ref('')
     currentId.value = route.params.postId
     const newPost = ref('')
+    const post = computed(() => store.getters.getPostById(currentId.value))
     onMounted(() => {
       store.dispatch('fetchPost', currentId.value)
       // store.dispatch('fetchEvents')
@@ -51,22 +62,22 @@ export default defineComponent({
       const community = computed(() => store.getters.getCommunityById(currentId.value))
       const event = computed(() => store.getters.getEventsByCid(currentId.value))
       const post = computed(() => store.getters.getPostsByCid(currentId.value))
-      // axios.get('https://api.thecatapi.com/v1/images/search?limt=1').then(res => {
-      //   console.log(res.data[0].url)
-      //   community.value.avatar = res.data[0].url
-      // })
     })
-    // console.log(currentId)
-    // axios.get(`/post/${currentId.value}`).then(res => {
-    //   console.log(res.data)
-    //   newPost.value = res.data
-    // })
-    const post = computed(() => store.getters.getPostById(currentId.value))
-    // console.log(post)
+    const showEditArea = computed(() => {
+      const { isLogin, _id } = store.state.user
+      if (post.value && post.value.author && isLogin) {
+        const postAuthor = post.value.author
+        return postAuthor === _id
+      } else {
+        return false
+      }
+    })
+
     return {
       post,
       route,
-      newPost
+      newPost,
+      showEditArea
     }
   }
 })

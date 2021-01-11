@@ -4,6 +4,7 @@
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
         <van-image
+          min-width="5rem"
           width="100%"
           height="auto"
           fit="cover"
@@ -36,16 +37,17 @@
       </div>
   </div>
   <van-popup v-model:show="show" v-model:cid="cid">
-    <van-swipe lazy-render>
+    <!-- <van-swipe lazy-render class="swipe">
       <van-swipe-item v-for="postItem in post.value" :key="postItem">
         <van-image
           :src="postItem.image"
-          width="100%"
+          width="auto"
           height="auto"
           fit="cover"
         />
       </van-swipe-item>
-    </van-swipe>
+    </van-swipe> -->
+    <community-post-swiper :post="post.value"></community-post-swiper>
   </van-popup>
 </template>
 
@@ -53,7 +55,8 @@
 import { computed, defineComponent, PropType, ref } from 'vue'
 import store from '../store'
 import { useRoute } from 'vue-router'
-import { SidebarMenu } from 'vue-sidebar-menu'
+import '@vant/touch-emulator'
+import CommunityPostSwiper from './CommunityPostSwiper.vue'
 export interface CommunityProps{
   id: number;
   communityName: string;
@@ -73,10 +76,20 @@ export default defineComponent({
       default: 'default'
     }
   },
+  components: {
+    CommunityPostSwiper
+  },
   setup () {
     const show = ref(false)
     const cid = ref('')
     const post = ref()
+    const swipe = ref()
+    // post defalut
+    post.value = [
+      { image: 'https://6865-hew-6gnlqghu3cfd5ebd-1303914954.tcb.qcloud.la/uploads/超 记.png' },
+      { image: 'https://6865-hew-6gnlqghu3cfd5ebd-1303914954.tcb.qcloud.la/uploads/超 记.png' },
+      { image: 'https://6865-hew-6gnlqghu3cfd5ebd-1303914954.tcb.qcloud.la/uploads/超 记.png' }
+    ]
     const showPostSwiper = (id: any) => {
       cid.value = id
       post.value = computed(() => store.getters.getPostsByCid(cid.value))
@@ -86,7 +99,8 @@ export default defineComponent({
       show,
       cid,
       showPostSwiper,
-      post
+      post,
+      swipe
     }
   }
 })
@@ -98,5 +112,8 @@ export default defineComponent({
   width: 20%;
   /* float: left;
   top:-100vh; */
+}
+.swipe{
+  width: 100%;
 }
 </style>

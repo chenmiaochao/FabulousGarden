@@ -8,6 +8,7 @@
       <uploader
       :action="'/post/upload'"
       :beforeUpload="uploadCheck"
+      :uploaded="uploadedData"
       @file-uploaded="onFileUploaded"
       :imgRules="imgRules"
       class="d-flex align-items-center justify-content-center bg-list text-secondary w-100 my-4"
@@ -19,6 +20,8 @@
         <h2>ガンバておりますぴえん🥺.🥺.🥺.🥺</h2>
       </template>
       <template #uploaded="dataProps">
+        <img  v-if="isEditMode" :src="dataProps.uploadedData.data" width="500" />
+
         <img :src="dataProps.uploadedData.data.imgUrl" width="500" />
       </template>
     </uploader>
@@ -137,6 +140,7 @@ export default defineComponent({
     const titleVal = ref('')
     const router = useRouter()
     const route = useRoute()
+    const isEditMode = !!route.query.id
     const store = useStore<GlobalDataProps>()
     // community event list 取得
     onMounted(() => {
@@ -157,6 +161,10 @@ export default defineComponent({
     const isEventClicked = ref(false)
     const communityVal = ref('')
     const eventVal = ref('')
+    const uploadedData = ref()
+    const contentVal = ref('')
+    const imgVal = ref('')
+
     // clickし、communityId取得,選択されたclassを追加
     const toggle = (_id: any) => {
       // console.log(_id)
@@ -179,16 +187,38 @@ export default defineComponent({
     onBeforeUpdate(() => {
       checkboxRefs.value = []
     })
-
+    onMounted(() => {
+      if (isEditMode) {
+        store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
+          const currentPost = rawData.data
+          if (currentPost.image) {
+            uploadedData.value = { data: currentPost.image }
+          }
+          titleVal.value = currentPost.title
+          if (currentPost.content) {
+            contentVal.value = currentPost.content
+          }
+          if (currentPost.image) {
+            imgVal.value = currentPost.image
+          }
+          if (currentPost.community) {
+            communityVal.value = currentPost.community
+            toggle(currentPost.community)
+          }
+          if (currentPost.event) {
+            eventVal.value = currentPost.event
+            toggleEvent(currentPost.event)
+          }
+        })
+      }
+    })
     // rules
     const titleRules: RulesProp = [
       { type: 'required', message: 'タイトルはからでは行けません' }
     ]
-    const contentVal = ref('')
     const contentRules: RulesProp = [
       { type: 'required', message: '文章はからでは行けません' }
     ]
-    const imgVal = ref('')
     const imgRules: RulesProp = [
       { type: 'required', message: '画像はからでは行けません' }
     ]
@@ -265,9 +295,11 @@ export default defineComponent({
       checkboxRefs,
       toggle,
       toggleEvent,
+      isEditMode,
       isComClicked,
       isEventClicked,
-      selectComAndEve
+      selectComAndEve,
+      uploadedData
     }
   }
 })
