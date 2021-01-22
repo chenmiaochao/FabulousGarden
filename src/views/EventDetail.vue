@@ -1,5 +1,11 @@
 <template>
   <div class="column-detail-page w-75 mx-auto">
+    <modal title="イベントを削除" :visible="modalIsVisible"
+      @modal-on-close="modalIsVisible = false"
+      @modal-on-confirm="hideAndDelete"
+    >
+      <p>ほんとにこのイベントを削除しますか？</p>
+    </modal>
     <h1>EventDetial</h1>
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="event">
       <div class="col-3 text-center">
@@ -32,17 +38,23 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import store, { GlobalDataProps } from '../store'
+import store, { EventProps, GlobalDataProps, ResponseType } from '../store'
+import Modal from '../components/Modal.vue'
 import PostList from '../components/PostList.vue'
+import createMessage from '../hooks/createMessage'
+
 export default defineComponent({
   components: {
-    PostList
+    PostList,
+    Modal
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
+    const router = useRouter()
+    const modalIsVisible = ref(false)
     const currentId = route.params.eventId
     onMounted(() => {
       store.dispatch('fetchEvent', currentId)
@@ -60,11 +72,23 @@ export default defineComponent({
         return false
       }
     })
+    const hideAndDelete = () => {
+      modalIsVisible.value = false
+      store.dispatch('deleteEvent', currentId).then((rawData: ResponseType<EventProps>) => {
+        console.log(rawData)
+        createMessage('削除成功，2秒後イベントへ', 'success', 2000)
+        setTimeout(() => {
+          router.push(`/community/${rawData.data.community}/`)
+        }, 2000)
+      })
+    }
     return {
       posts,
       event,
       route,
-      showEditArea
+      showEditArea,
+      modalIsVisible,
+      hideAndDelete
     }
   }
 })

@@ -1,6 +1,12 @@
 <template>
   <div class="column-detail-page w-75 mx-auto">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="community">
+      <modal title="コミュニティを削除" :visible="modalIsVisible"
+        @modal-on-close="modalIsVisible = false"
+        @modal-on-confirm="hideAndDelete"
+      >
+        <p>ほんとにこのコミュニティを削除しますか？</p>
+      </modal>
       <h2>{{community.communityName}}</h2>
       <div class="col-3 text-center">
         <img :src="community.avatar" :alt="community.communityName" class="border w-100">
@@ -39,22 +45,27 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
-import { GlobalDataProps } from '../store'
-import { useRoute } from 'vue-router'
+import { GlobalDataProps, CommunityProps, ResponseType } from '../store'
+import { useRoute, useRouter } from 'vue-router'
 import EventList from '../components/EventList.vue'
 import axios from 'axios'
+import Modal from '../components/Modal.vue'
 import PostList from '../components/PostList.vue'
 import { addColumnAvatar } from '../helper'
-// import { testData, testEvent } from '../testData'
+import createMessage from '../hooks/createMessage'
+
 export default defineComponent({
   components: {
     EventList,
-    PostList
+    PostList,
+    Modal
+
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
-    // string => number
+    const router = useRouter()
+    const modalIsVisible = ref(false)
     const currentId: any = ref('')
     currentId.value = route.params.communityId
     onMounted(() => {
@@ -89,13 +100,25 @@ export default defineComponent({
         return false
       }
     })
+    const hideAndDelete = () => {
+      modalIsVisible.value = false
+      store.dispatch('deleteCommunity', currentId.value).then((rawData: ResponseType<CommunityProps>) => {
+        console.log(rawData)
+        createMessage('削除成功，2秒後トップへ', 'success', 2000)
+        setTimeout(() => {
+          router.push('/')
+        }, 2000)
+      })
+    }
     return {
       community,
       event,
       route,
       post,
       postInThisMonth,
-      showEditArea
+      showEditArea,
+      modalIsVisible,
+      hideAndDelete
     }
   }
 })

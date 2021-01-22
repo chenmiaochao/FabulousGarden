@@ -7,6 +7,7 @@ import EventDetail from './views/EventDetail.vue'
 import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import CreateEvent from './views/CreateEvent.vue'
+import UserProfile from './views/UserProfile.vue'
 import axios from 'axios'
 import store from './store'
 const routerHistory = createWebHistory()
@@ -22,6 +23,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login,
+      meta: { redirectAlreadyLogin: true }
+    },
+    {
+      path: '/userProfile',
+      name: 'userProfile',
+      component: UserProfile,
       meta: { redirectAlreadyLogin: true }
     },
     {

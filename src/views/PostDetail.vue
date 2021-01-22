@@ -1,5 +1,11 @@
 <template>
   <article class="column-detail-page w-75 mx-auto">
+    <modal title="POSTを削除" :visible="modalIsVisible"
+      @modal-on-close="modalIsVisible = false"
+      @modal-on-confirm="hideAndDelete"
+    >
+      <p>ほんとにこのPOSTを削除しますか？</p>
+    </modal>
     <h1>PostDetial</h1>
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="post">
       <div class="col-9">
@@ -41,13 +47,22 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent, computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import store, { GlobalDataProps, UserProps } from '../store'
+import Modal from '../components/Modal.vue'
+import store, { GlobalDataProps, UserProps, PostProps, ResponseType } from '../store'
+import createMessage from '../hooks/createMessage'
+
 export default defineComponent({
+  name: 'PostDetail',
+  components: {
+    Modal
+  },
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
+    const router = useRouter()
+    const modalIsVisible = ref(false)
     const currentId: any = ref('')
     currentId.value = route.params.postId
     const newPost = ref('')
@@ -72,12 +87,23 @@ export default defineComponent({
         return false
       }
     })
-
+    const hideAndDelete = () => {
+      modalIsVisible.value = false
+      store.dispatch('deletePost', currentId.value).then((rawData: ResponseType<PostProps>) => {
+        console.log(rawData)
+        createMessage('削除成功，2秒後イベントへ', 'success', 2000)
+        setTimeout(() => {
+          router.push(`/community/${rawData.data.community}/${rawData.data.event}/`)
+        }, 2000)
+      })
+    }
     return {
       post,
       route,
       newPost,
-      showEditArea
+      showEditArea,
+      modalIsVisible,
+      hideAndDelete
     }
   }
 })

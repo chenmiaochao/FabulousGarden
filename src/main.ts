@@ -12,9 +12,9 @@ import 'vant/lib/index.css'
 // })
 
 // local
-axios.defaults.baseURL = '/api/'
+// axios.defaults.baseURL = '/api/'
 // production
-// axios.defaults.baseURL = 'https://hello01-7giu5skn1a268e40-1303914954.ap-shanghai.service.tcloudbase.com/FabulousGarden-backend/api'
+axios.defaults.baseURL = 'https://hello01-7giu5skn1a268e40-1303914954.ap-shanghai.service.tcloudbase.com/FabulousGarden-backend/api'
 axios.interceptors.request.use(config => {
   store.commit('setLoading', true)
   store.commit('setError', { status: false, message: '' })

@@ -121,6 +121,9 @@ const store = createStore<GlobalDataProps>({
         }
       })
     },
+    deletePost (state, { data }) {
+      state.posts = state.posts.filter(post => post._id !== data._id)
+    },
     createEvent (state, rawdata) {
       state.events = rawdata.data
     },
@@ -133,6 +136,9 @@ const store = createStore<GlobalDataProps>({
         }
       })
     },
+    deleteEvent (state, { data }) {
+      state.posts = state.posts.filter(post => post._id !== data._id)
+    },
     createCommunity (state, newCommunity) {
       state.communities.push(newCommunity)
     },
@@ -144,6 +150,9 @@ const store = createStore<GlobalDataProps>({
           return community
         }
       })
+    },
+    deleteCommunity (state, { data }) {
+      state.posts = state.posts.filter(post => post._id !== data._id)
     },
     fetchCommunities (state, rawdata) {
       state.communities = rawdata.data
@@ -219,6 +228,11 @@ const store = createStore<GlobalDataProps>({
         data: payload
       })
     },
+    deleteCommunity ({ commit }, id) {
+      return asyncAndCommit(`/community/${id}`, 'deleteCommunity', commit, {
+        method: 'delete'
+      })
+    },
     fetchCommunitiesWithEvents ({ commit }) {
       return getAndCommit('/community/all', 'fetchCommunitiesWithEvents', commit)
     },
@@ -237,6 +251,11 @@ const store = createStore<GlobalDataProps>({
         data: payload
       })
     },
+    deleteEvent ({ commit }, id) {
+      return asyncAndCommit(`/event/${id}`, 'deleteEvent', commit, {
+        method: 'delete'
+      })
+    },
     fetchPosts ({ commit }) {
       return getAndCommit('/post', 'fetchPosts', commit)
     },
@@ -250,6 +269,11 @@ const store = createStore<GlobalDataProps>({
       return asyncAndCommit(`/post/${id}`, 'updatePost', commit, {
         method: 'patch',
         data: payload
+      })
+    },
+    deletePost ({ commit }, id) {
+      return asyncAndCommit(`/post/${id}`, 'deletePost', commit, {
+        method: 'delete'
       })
     },
     fetchCurrentUser ({ commit }) {
@@ -320,8 +344,11 @@ const store = createStore<GlobalDataProps>({
       return array.filter(p => p.createdAtMonth === new Date().toLocaleString().split('/')[1])
     },
     getPerfList: (PrefecturesContent) => () => {
-      console.log(PrefecturesContent)
+      // console.log(PrefecturesContent)
       return PrefecturesContent
+    },
+    getCommunityByAuthorId: (state) => (aid: string) => {
+      return state.communities.filter(c => c.author === aid)
     }
   }
 })
