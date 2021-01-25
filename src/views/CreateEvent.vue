@@ -418,7 +418,7 @@ export default defineComponent({
           store.dispatch(actionName, sendData).then(data => {
           // store.dispatch('createEvent', newEvent).then(data => {
             store.dispatch('fetchEvents')
-            createMessage('成功２秒後 新規コミュニティへ飛ばし', 'success')
+            createMessage('成功２秒後 新規イベントへ飛ばし', 'success')
             setTimeout(() => {
               router.push(`/community/${data.data.community}/${data.data._id}`)
             }, 2000)

@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { createStore, Commit } from 'vuex'
-import PrefecturesContent from '../content'
+import { arrToObj, objToArr } from './helper'
 // import { testData, testEvent, testPosts } from './testData'
 export interface ResponseType<P = {}> {
   code: number;
@@ -21,7 +21,7 @@ export interface ImageProps {
   latlng?: object;
 }
 export interface PostProps {
-  _id?: any;
+  _id?: string;
   author?: string;
   title: string;
   excerpt?: string;
@@ -55,13 +55,16 @@ export interface MakerProps{
   title?: string;
   draggable: boolean;
 }
+interface ListProps<P> {
+  [id: string]: P;
+}
 export interface GlobalDataProps {
   error: GlobalErrorProps;
   token: string;
   loading: boolean;
-  communities: CommunityProps[];
-  events: EventProps[];
-  posts: PostProps[];
+  communities: ListProps<CommunityProps>;
+  events: ListProps<EventProps>;
+  posts: ListProps<PostProps>;
   user: UserProps;
   hotels: any;
   markers: MakerProps[];
@@ -97,9 +100,9 @@ const store = createStore<GlobalDataProps>({
     error: { status: false },
     token: localStorage.getItem('token') || '',
     loading: false,
-    communities: [],
-    events: [],
-    posts: [],
+    communities: {},
+    events: {},
+    posts: {},
     user: { isLogin: false },
     hotels: [],
     markers: [{
@@ -110,75 +113,57 @@ const store = createStore<GlobalDataProps>({
   },
   mutations: {
     createPost (state, newPost) {
-      state.posts.push(newPost)
+      state.posts[newPost._id] = newPost
     },
     updatePost (state, { data }) {
-      state.posts = state.posts.map(post => {
-        if (post._id === data._id) {
-          return data
-        } else {
-          return post
-        }
-      })
+      state.posts[data._id] = data
     },
     deletePost (state, { data }) {
-      state.posts = state.posts.filter(post => post._id !== data._id)
+      delete state.posts[data._id]
     },
-    createEvent (state, rawdata) {
-      state.events = rawdata.data
+    createEvent (state, newEvent) {
+      state.events[newEvent._id] = newEvent
     },
     updateEvent (state, { data }) {
-      state.events = state.events.map(event => {
-        if (event._id === data._id) {
-          return data
-        } else {
-          return event
-        }
-      })
+      state.events[data._id] = data
     },
     deleteEvent (state, { data }) {
-      state.posts = state.posts.filter(post => post._id !== data._id)
+      delete state.events[data._id]
     },
     createCommunity (state, newCommunity) {
-      state.communities.push(newCommunity)
+      state.communities[newCommunity._id] = newCommunity
     },
     updateCommunity (state, { data }) {
-      state.communities = state.communities.map(community => {
-        if (community._id === data._id) {
-          return data
-        } else {
-          return community
-        }
-      })
+      state.communities[data._id] = data
     },
     deleteCommunity (state, { data }) {
-      state.posts = state.posts.filter(post => post._id !== data._id)
+      delete state.posts[data._id]
     },
     fetchCommunities (state, rawdata) {
-      state.communities = rawdata.data
+      state.communities = arrToObj(rawdata.data)
     },
     fetchCommunity (state, rawdata) {
-      state.communities = [rawdata.data]
+      state.communities[rawdata.data._id] = rawdata.data
     },
     fetchCommunitiesWithEvents (state, rawdata) {
       // console.log('fetchCommunitiesWithEvents', rawdata.data)
-      state.communities = rawdata.data
+      state.communities = arrToObj(rawdata.data)
       // console.log(state.communities)
     },
     fetchEvents (state, rawdata) {
-      state.events = rawdata.data
+      state.events = arrToObj(rawdata.data)
     },
     fetchEvent (state, rawdata) {
       // console.log([rawdata.data])
-      state.events = [rawdata.data]
+      state.events[rawdata.data._id] = rawdata.data
     },
     fetchPosts (state, rawdata) {
-      state.posts = rawdata.data
+      state.posts = arrToObj(rawdata.data)
       // console.log(state.posts)
     },
     fetchPost (state, rawdata) {
       // console.log(rawdata)
-      state.posts = [rawdata.data]
+      state.posts[rawdata.data._id] = rawdata.data
     },
     setLoading (state, status) {
       state.loading = status
@@ -316,31 +301,31 @@ const store = createStore<GlobalDataProps>({
     // getter返回可以是对象 也可是函数
     // カクカクの詳細データ
     getCommunityById: (state) => (id: string) => {
-      return state.communities.find(c => c._id === id)
+      return state.communities[id]
     },
     getEventById: (state) => (id: string) => {
       // console.log(state.events)
-      return state.events.find(event => event._id === id)
+      return state.events[id]
     },
     getPostById: (state) => (id: string) => {
-      return state.posts.find(post => post._id === id)
+      return state.posts[id]
     },
     // cidでからevent list取得
     getEventsByCid: (state) => (cid: string) => {
-      return state.events.filter(e => e.community === cid)
+      return objToArr(state.events).filter(e => e.community === cid)
     },
     // eidからpost list取得
     getPostsByEid: (state) => (eid: string) => {
       // console.log('state.posts', state.posts)
-      return state.posts.filter(p => p.event === eid)
+      return objToArr(state.posts).filter(p => p.event === eid)
     },
     getPostsByCid: (state) => (cid: string) => {
       // console.log('state.posts by cid', state.posts)
-      return state.posts.filter(p => p.community === cid)
+      return objToArr(state.posts).filter(p => p.community === cid)
     },
     getPostsByCidAndSelectFromThisMonth: (state) => (cid: string) => {
       // console.log('state.posts by cid', state.posts)
-      const array = state.posts.filter(p => p.community === cid)
+      const array = objToArr(state.posts).filter(p => p.community === cid)
       return array.filter(p => p.createdAtMonth === new Date().toLocaleString().split('/')[1])
     },
     getPerfList: (PrefecturesContent) => () => {
@@ -348,7 +333,7 @@ const store = createStore<GlobalDataProps>({
       return PrefecturesContent
     },
     getCommunityByAuthorId: (state) => (aid: string) => {
-      return state.communities.filter(c => c.author === aid)
+      return objToArr(state.communities).filter(c => c.author === aid)
     }
   }
 })
