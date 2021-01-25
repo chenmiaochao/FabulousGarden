@@ -143,16 +143,16 @@ export default defineComponent({
     const isEditMode = !!route.query.id
     const store = useStore<GlobalDataProps>()
     // community event list 取得
-    onMounted(() => {
-      store.dispatch('fetchCommunitiesWithEvents')
-      // console.log('3')
-    })
-    onBeforeMount(() => {
-      store.dispatch('fetchCommunitiesWithEvents')
-      // console.log('2')
-    })
+    // onMounted(() => {
+    //   store.dispatch('fetchCommunitiesWithEvents')
+    //   // console.log('3')
+    // })
+    // onBeforeMount(() => {
+    //   store.dispatch('fetchCommunitiesWithEvents')
+    //   // console.log('2')
+    // })
     store.dispatch('fetchCommunitiesWithEvents')
-    const communitiesWithEvents = computed(() => store.state.communities)
+    const communitiesWithEvents = computed(() => store.getters.getCommunities)
     // console.log('1', communitiesWithEvents.value)
 
     const checked = ref([])

@@ -338,7 +338,7 @@ export default defineComponent({
       createMessage('上传图片成功', 'success')
     }
     store.dispatch('fetchCommunities')
-    const communities = computed(() => store.state.communities)
+    const communities = computed(() => store.getters.getCommunities)
 
     // 選択の戻り値
     const hotels = ref()

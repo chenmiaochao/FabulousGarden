@@ -217,6 +217,8 @@ const store = createStore<GlobalDataProps>({
     fetchCommunity ({ state, commit }, cid) {
       if (!state.communities.data[cid]) {
         return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
+      } else {
+        return Promise.resolve({ data: state.communities.data[cid] })
       }
     },
     createCommunity ({ commit }, payload) {
@@ -244,6 +246,8 @@ const store = createStore<GlobalDataProps>({
     fetchEvent ({ state, commit }, eid) {
       if (!state.events.data[eid]) {
         return getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
+      } else {
+        return Promise.resolve({ data: state.events.data[eid] })
       }
     },
     createEvent ({ commit }, payload) {
@@ -268,6 +272,8 @@ const store = createStore<GlobalDataProps>({
     fetchPost ({ state, commit }, pid) {
       if (!state.posts.data[pid]) {
         return getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+      } else {
+        return Promise.resolve({ data: state.posts.data[pid] })
       }
     },
     createPost ({ commit }, payload) {
