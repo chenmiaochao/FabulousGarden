@@ -62,9 +62,9 @@ export interface GlobalDataProps {
   error: GlobalErrorProps;
   token: string;
   loading: boolean;
-  communities: ListProps<CommunityProps>;
-  events: ListProps<EventProps>;
-  posts: ListProps<PostProps>;
+  communities: { data: ListProps<CommunityProps>; isLoaded: boolean };
+  events: { data: ListProps<EventProps>; isLoaded: boolean };
+  posts: { data: ListProps<PostProps>; isLoaded: boolean };
   user: UserProps;
   hotels: any;
   markers: MakerProps[];
@@ -90,9 +90,14 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
   commit(mutationName, data)
   return data
 }
-const asyncAndCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+const asyncAndCommit = async (url: string, mutationName: string, commit: Commit,
+  config: AxiosRequestConfig = { method: 'get' }, extraData?: any) => {
   const { data } = await axios(url, config)
-  commit(mutationName, data)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
   return data
 }
 const store = createStore<GlobalDataProps>({
@@ -100,9 +105,9 @@ const store = createStore<GlobalDataProps>({
     error: { status: false },
     token: localStorage.getItem('token') || '',
     loading: false,
-    communities: {},
-    events: {},
-    posts: {},
+    communities: { data: {}, isLoaded: false },
+    events: { data: {}, isLoaded: false },
+    posts: { data: {}, isLoaded: false },
     user: { isLogin: false },
     hotels: [],
     markers: [{
@@ -113,57 +118,63 @@ const store = createStore<GlobalDataProps>({
   },
   mutations: {
     createPost (state, newPost) {
-      state.posts[newPost._id] = newPost
+      state.posts.data[newPost._id] = newPost
     },
     updatePost (state, { data }) {
-      state.posts[data._id] = data
+      state.posts.data[data._id] = data
     },
     deletePost (state, { data }) {
-      delete state.posts[data._id]
+      delete state.posts.data[data._id]
     },
     createEvent (state, newEvent) {
-      state.events[newEvent._id] = newEvent
+      state.events.data[newEvent._id] = newEvent
     },
     updateEvent (state, { data }) {
-      state.events[data._id] = data
+      state.events.data[data._id] = data
     },
     deleteEvent (state, { data }) {
-      delete state.events[data._id]
+      delete state.events.data[data._id]
     },
     createCommunity (state, newCommunity) {
-      state.communities[newCommunity._id] = newCommunity
+      state.communities.data[newCommunity._id] = newCommunity
     },
     updateCommunity (state, { data }) {
-      state.communities[data._id] = data
+      state.communities.data[data._id] = data
     },
     deleteCommunity (state, { data }) {
-      delete state.posts[data._id]
+      delete state.posts.data[data._id]
     },
     fetchCommunities (state, rawdata) {
-      state.communities = arrToObj(rawdata.data)
+      state.communities.data = arrToObj(rawdata.data)
+      // console.log('fetchCommunities', state.communities.data)
+      state.communities.isLoaded = true
     },
     fetchCommunity (state, rawdata) {
-      state.communities[rawdata.data._id] = rawdata.data
+      state.communities.data[rawdata.data._id] = rawdata.data
     },
     fetchCommunitiesWithEvents (state, rawdata) {
       // console.log('fetchCommunitiesWithEvents', rawdata.data)
-      state.communities = arrToObj(rawdata.data)
+      state.communities.data = arrToObj(rawdata.data)
       // console.log(state.communities)
     },
     fetchEvents (state, rawdata) {
-      state.events = arrToObj(rawdata.data)
+      // 二つのobjをmergeする仕方
+      state.events.data = { ...state.events.data, ...arrToObj(rawdata.data) }
+      // state.events.data = arrToObj(rawdata.data)
+      state.events.isLoaded = true
     },
     fetchEvent (state, rawdata) {
       // console.log([rawdata.data])
-      state.events[rawdata.data._id] = rawdata.data
+      state.events.data[rawdata.data._id] = rawdata.data
     },
     fetchPosts (state, rawdata) {
-      state.posts = arrToObj(rawdata.data)
+      state.posts.data = arrToObj(rawdata.data)
       // console.log(state.posts)
+      state.posts.isLoaded = true
     },
     fetchPost (state, rawdata) {
       // console.log(rawdata)
-      state.posts[rawdata.data._id] = rawdata.data
+      state.posts.data[rawdata.data._id] = rawdata.data
     },
     setLoading (state, status) {
       state.loading = status
@@ -198,11 +209,15 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
-    fetchCommunities ({ commit }) {
-      return getAndCommit('/community', 'fetchCommunities', commit)
+    fetchCommunities ({ state, commit }) {
+      if (!state.communities.isLoaded) {
+        return asyncAndCommit('/community', 'fetchCommunities', commit)
+      }
     },
-    fetchCommunity ({ commit }, cid) {
-      return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
+    fetchCommunity ({ state, commit }, cid) {
+      if (!state.communities.data[cid]) {
+        return getAndCommit(`/community/${cid}`, 'fetchCommunity', commit)
+      }
     },
     createCommunity ({ commit }, payload) {
       return postAndCommit('/community/new', 'createCommunity', commit, payload)
@@ -221,11 +236,15 @@ const store = createStore<GlobalDataProps>({
     fetchCommunitiesWithEvents ({ commit }) {
       return getAndCommit('/community/all', 'fetchCommunitiesWithEvents', commit)
     },
-    fetchEvents ({ commit }) {
-      return getAndCommit('/event', 'fetchEvents', commit)
+    fetchEvents ({ state, commit }) {
+      if (!state.events.isLoaded) {
+        return getAndCommit('/event', 'fetchEvents', commit)
+      }
     },
-    fetchEvent ({ commit }, eid) {
-      return getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
+    fetchEvent ({ state, commit }, eid) {
+      if (!state.events.data[eid]) {
+        return getAndCommit(`/event/${eid}`, 'fetchEvent', commit)
+      }
     },
     createEvent ({ commit }, payload) {
       return postAndCommit('/event/new', 'createEvent', commit, payload)
@@ -241,11 +260,15 @@ const store = createStore<GlobalDataProps>({
         method: 'delete'
       })
     },
-    fetchPosts ({ commit }) {
-      return getAndCommit('/post', 'fetchPosts', commit)
+    fetchPosts ({ state, commit }) {
+      if (!state.posts.isLoaded) {
+        return getAndCommit('/post', 'fetchPosts', commit)
+      }
     },
-    fetchPost ({ commit }, pid) {
-      return getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+    fetchPost ({ state, commit }, pid) {
+      if (!state.posts.data[pid]) {
+        return getAndCommit(`/post/${pid}`, 'fetchPost', commit)
+      }
     },
     createPost ({ commit }, payload) {
       return postAndCommit('/post/new', 'createPost', commit, payload)
@@ -298,34 +321,40 @@ const store = createStore<GlobalDataProps>({
     }
   },
   getters: {
+    getCommunities: (state) => {
+      return objToArr(state.communities.data)
+    },
+    getPosts: (state) => {
+      return objToArr(state.posts.data)
+    },
     // getter返回可以是对象 也可是函数
     // カクカクの詳細データ
     getCommunityById: (state) => (id: string) => {
-      return state.communities[id]
+      return state.communities.data[id]
     },
     getEventById: (state) => (id: string) => {
       // console.log(state.events)
-      return state.events[id]
+      return state.events.data[id]
     },
     getPostById: (state) => (id: string) => {
-      return state.posts[id]
+      return state.posts.data[id]
     },
     // cidでからevent list取得
     getEventsByCid: (state) => (cid: string) => {
-      return objToArr(state.events).filter(e => e.community === cid)
+      return objToArr(state.events.data).filter(e => e.community === cid)
     },
     // eidからpost list取得
     getPostsByEid: (state) => (eid: string) => {
       // console.log('state.posts', state.posts)
-      return objToArr(state.posts).filter(p => p.event === eid)
+      return objToArr(state.posts.data).filter(p => p.event === eid)
     },
     getPostsByCid: (state) => (cid: string) => {
       // console.log('state.posts by cid', state.posts)
-      return objToArr(state.posts).filter(p => p.community === cid)
+      return objToArr(state.posts.data).filter(p => p.community === cid)
     },
     getPostsByCidAndSelectFromThisMonth: (state) => (cid: string) => {
       // console.log('state.posts by cid', state.posts)
-      const array = objToArr(state.posts).filter(p => p.community === cid)
+      const array = objToArr(state.posts.data).filter(p => p.community === cid)
       return array.filter(p => p.createdAtMonth === new Date().toLocaleString().split('/')[1])
     },
     getPerfList: (PrefecturesContent) => () => {
@@ -333,7 +362,7 @@ const store = createStore<GlobalDataProps>({
       return PrefecturesContent
     },
     getCommunityByAuthorId: (state) => (aid: string) => {
-      return objToArr(state.communities).filter(c => c.author === aid)
+      return objToArr(state.communities.data).filter(c => c.author === aid)
     }
   }
 })

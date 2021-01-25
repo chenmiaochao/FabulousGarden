@@ -43,7 +43,7 @@
         />
       </div>
       <template #submit>
-        <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}
+        <button class="btn btn-primary btn-large">{{isEditMode ? 'コミュニティ編集' : 'コミュニティ作成'}}
 </button>
       </template>
     </validate-form>

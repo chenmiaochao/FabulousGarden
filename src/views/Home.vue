@@ -44,8 +44,8 @@ export default defineComponent({
       store.dispatch('fetchPosts')
     })
     // vue3のstoreはreactiedなもので、storeのstateを取得にはcomuptedが必要
-    const communityData = computed(() => store.state.communities)
-    const posts = computed(() => store.state.posts)
+    const communityData = computed(() => store.getters.getCommunities)
+    const posts = computed(() => store.getters.getPosts)
     return {
       list: communityData,
       posts,
