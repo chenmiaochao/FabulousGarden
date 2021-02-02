@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <van-sticky :offset-top="'95vh'" class="">
-      <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button>
+        <p>
+          <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+          <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
+          <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
+        </p>
+      <!-- <van-button round icon="plus" type="success" is-link @click="showPopup"></van-button> -->
     </van-sticky>
     <global-header :user="currentUser"></global-header>
     <loader v-if="isLoading" text="読み込み中ぴえん🥺🥺🥺🥺🥺"></loader>
@@ -19,11 +24,7 @@
         :style="{ height: 'auto' }"
         @click.prevent="click"
       >
-        <p>
-          <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
-          <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
-          <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
-        </p>
+
       </van-popup>
       <van-popup
         v-model:show="showCommunity"
@@ -64,7 +65,7 @@ export default defineComponent({
     const isLoading = computed(() => store.state.loading)
     const token = computed(() => store.state.token)
     const error = computed(() => store.state.error)
-    const communityData = computed(() => store.state.communities)
+    const communityData = computed(() => store.getters.getCommunities)
     onMounted(() => {
       store.dispatch('fetchCommunities')
       if (!currentUser.value.isLogin && token) {

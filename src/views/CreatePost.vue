@@ -118,12 +118,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, onBeforeMount, onBeforeUpdate } from 'vue'
-import { Checkbox, CheckboxGroup } from 'vant'
+import { defineComponent, ref, onMounted, computed, onBeforeUpdate } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, PostProps, ImageProps, ResponseType } from '../store'
-import axios from 'axios'
 import { beforeUploadCheck } from '../helper'
 import Uploader from '../components/Uploader.vue'
 import createMessage from '../hooks/createMessage'

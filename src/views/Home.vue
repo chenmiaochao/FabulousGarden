@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <section class="py-5 text-center container">
+    <section class="text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 com-md-8 mx-auto">
           <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
@@ -10,11 +10,11 @@
             <van-swipe-item><img src="../assets/4.png" alt="callout" class="w-50"/></van-swipe-item>
           </van-swipe>
           <h2 class="font-weight-light">心のままにシェアしよう</h2>
-          <p>
+          <!-- <p>
             <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
             <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
             <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
-          </p>
+          </p> -->
         </div>
       </div>
       <community-list :list="list" :type="'default'"></community-list>
