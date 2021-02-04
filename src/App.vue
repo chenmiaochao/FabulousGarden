@@ -2,7 +2,7 @@
   <div class="container">
     <van-sticky :offset-top="'95vh'" class="">
         <p>
-          <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
+          <router-link to="/createC" class="btn btn-secondary my-2">コミュニティ創生</router-link>
           <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
           <router-link to="/create" class="btn btn-primary my-2">アップしよう</router-link>
         </p>
@@ -34,7 +34,6 @@
         :style="{ height: 'auto' }"
         @click.prevent="click"
       >
-        <h4>コミュニティ</h4>
         <community-list :list="list" :type="'round'"></community-list>
       </van-popup>
     </div>
@@ -45,10 +44,10 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import { defineComponent, PropType, reactive, ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
+import GlobalHeader from './components/GlobalHeader.vue'
 import Loader from './components/Loader.vue'
 import CommunityList from './components/CommunityList.vue'
-import { GlobalDataProps } from './store'
+import { GlobalDataProps, UserProps } from './store'
 import createMessage from './hooks/createMessage'
 /// <reference types="googlemaps" />
 /* eslint-disable no-undef */

@@ -1,7 +1,7 @@
 <template>
   <div v-if="type === 'default'" class="row">
     <div class=" d-flex flex-row flex-nowrap overflow-scroll">
-      <div v-for="community in list" :key="community._id" class="col-4  mb-4">
+      <div v-for="(community, index) in list" :key="community._id" class="col-4  mb-4">
         <div class="card-body text-center">
           <van-image
             round
@@ -15,7 +15,8 @@
             :src="community.avatar"
             :alt="community.description"
             @click.prevent="showPostSwiper(community._id)"
-            class="shadow-sm"
+            class="shadow-sm border  border-3"
+            :class="bColor[index%5]"
           />
           <!-- <img  :src="community.avatar" :alt="community.ticommunityNametle" class="rounded-circle border border-light w-25 my-3" > -->
           <h5 class="card-title">{{community.communityName}}</h5>
@@ -30,7 +31,7 @@
     </div>
 
   </div>
-  <div v-else-if="type === 'round'" class="">
+  <div v-else-if="type === 'round'" class="bg2">
       <div v-for="community in list" :key="community._id" class="">
         <router-link :to="`/community/${community._id}`">
         <van-image
@@ -99,12 +100,22 @@ export default defineComponent({
       show.value = true
       // createPopupPosts(post)
     }
+    const bColor = [
+      'border-secondary',
+      'border-danger',
+      'border-warning',
+      'border-success',
+      'border-info',
+      'border-primary',
+      'border-light'
+    ]
     return {
       show,
       cid,
       showPostSwiper,
       post,
-      swipe
+      swipe,
+      bColor
     }
   }
 })
@@ -120,4 +131,17 @@ export default defineComponent({
 .swipe{
   width: 100%;
 }
+.bg2{
+  background-color: #D9AFD9;
+  background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+}
+.border-secondary1{
+  border-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
+}
+.border-danger1{
+  border: 4px solid #FA8BFF;
+  border-image: linear-gradient(45deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%);
+  border-image-slice: 1;
+}
+
 </style>

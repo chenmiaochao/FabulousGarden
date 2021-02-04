@@ -3,13 +3,13 @@
     <section class="text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 com-md-8 mx-auto">
-          <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+          <!-- <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
             <van-swipe-item><img src="../assets/1.png" alt="callout" class="w-50"/></van-swipe-item>
             <van-swipe-item><img src="../assets/2.png" alt="callout" class="w-50"/></van-swipe-item>
             <van-swipe-item><img src="../assets/3.png" alt="callout" class="w-50"/></van-swipe-item>
             <van-swipe-item><img src="../assets/4.png" alt="callout" class="w-50"/></van-swipe-item>
           </van-swipe>
-          <h2 class="font-weight-light">心のままにシェアしよう</h2>
+          <h2 class="font-weight-light">心のままにシェアしよう</h2> -->
           <!-- <p>
             <router-link to="/createC" class="btn btn-secondary my-2">コミュニティを創生しよう</router-link>
             <router-link to="/createE" class="btn btn-info my-3">イベント生成</router-link>
