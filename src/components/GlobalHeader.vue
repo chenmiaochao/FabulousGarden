@@ -2,14 +2,6 @@
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
 
     <router-link to="/" class="navbar-brand"><img src="@/assets/cat.png" width="120" height="120" class="d-inline-block align-center" alt="" loading="lazy">Fabulous Garden</router-link>
-    <div>
-      <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item><img src="@/assets/1.png" alt="callout" class="w-50"/></van-swipe-item>
-        <van-swipe-item><img src="@/assets/2.png" alt="callout" class="w-50"/></van-swipe-item>
-        <van-swipe-item><img src="@/assets/3.png" alt="callout" class="w-50"/></van-swipe-item>
-        <van-swipe-item><img src="@/assets/4.png" alt="callout" class="w-50"/></van-swipe-item>
-      </van-swipe>
-    </div>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inlint-item"><router-link to="/login" class="btn btn-outline-light my-2">ログイン</router-link></li>
       <li class="list-inlint-item"><router-link to="/login" class="btn btn-outline-light my-2">サインアップ</router-link></li>
